@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.market.dao.TopicMapper">
+    <sql id="Base_Column_List">
+        id, title, subtitle, price, read_count, pic_url, sort_order, goods, add_time, update_time, deleted, content
+    </sql>
+    <resultMap id="topic" type="com.example.common.entity.Topic">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="subtitle" jdbcType="VARCHAR" property="subtitle" />
+        <result column="price" jdbcType="DECIMAL" property="price" />
+        <result column="read_count" jdbcType="VARCHAR" property="readCount" />
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+        <result column="sort_order" jdbcType="INTEGER" property="sortOrder" />
+        <result column="goods" jdbcType="VARCHAR" property="goods" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+    <select id="selective" resultMap="topic" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_topic
+        <trim prefix="where" prefixOverrides="and">
+        </trim>
+        <if test="map.topicSort != null and map.topicSort !='' and map.topicOrder != null and map.topicOrder != ''">
+            order by ${map.topicSort} ${map.topicOrder}
+        </if>
+    </select>
+</mapper>

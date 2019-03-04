@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.goods.dao.OrderGoodsMapper">
+    <sql id="Base_Column_List">
+        id, order_id, goods_id, goods_name, goods_sn, product_id, `number`, price, specifications, pic_url, `comment`, add_time, update_time, deleted
+    </sql>
+    <resultMap id="orderGoods" type="com.example.common.entity.OrderGoods">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="order_id" jdbcType="INTEGER" property="orderId" />
+        <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+        <result column="goods_sn" jdbcType="VARCHAR" property="goodsSn" />
+        <result column="product_id" jdbcType="INTEGER" property="productId" />
+        <result column="number" jdbcType="SMALLINT" property="number" />
+        <result column="price" jdbcType="DECIMAL" property="price" />
+        <result column="specifications" jdbcType="VARCHAR" property="specifications" typeHandler="com.example.common.mybatis.JsonStringArrayTypeHandler" />
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+        <result column="comment" jdbcType="INTEGER" property="comment" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+    <select id="selective" resultMap="orderGoods" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_order_goods
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.goodsId != null">
+                and goods_id = #{map.goodsId,jdbcType=INTEGER}
+            </if>
+            <if test="map.grouponDeleted != null">
+                and deleted = #{map.grouponDeleted}
+            </if>
+        </trim>
+        <if test="map.grouponSort != null and map.grouponSort !='' and map.grouponOrder != null and map.grouponOrder != ''">
+            order by ${map.grouponSort} ${map.grouponOrder}
+        </if>
+    </select>
+</mapper>

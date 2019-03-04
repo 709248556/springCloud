@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.user.dao.UserMapper">
+    <sql id="Base_Column_List">
+        id, username, `password`, gender, birthday, last_login_time, last_login_ip, user_level,
+          nickname, mobile, avatar, weixin_openid, `status`, add_time, update_time, deleted
+    </sql>
+    <resultMap id="user" type="com.example.common.entity.User">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="gender" jdbcType="TINYINT" property="gender"/>
+        <result column="birthday" jdbcType="DATE" property="birthday"/>
+        <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime"/>
+        <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp"/>
+        <result column="user_level" jdbcType="TINYINT" property="userLevel"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="weixin_openid" jdbcType="VARCHAR" property="weixinOpenid"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="deleted" jdbcType="BIT" property="deleted"/>
+    </resultMap>
+    <select id="selective" resultMap="user" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_user
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.userId != null">
+                and id = #{map.userId,jdbcType=INTEGER}
+            </if>
+            <if test="map.weixinOpenid != null">
+                and weixin_openid = #{map.weixinOpenid,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insertive" parameterType="JsonData">
+        insert into litemall_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="map.username != null">
+                username,
+            </if>
+            <if test="map.password != null">
+                `password`,
+            </if>
+            <if test="map.gender != null">
+                gender,
+            </if>
+            <if test="map.birthday != null">
+                birthday,
+            </if>
+            <if test="map.lastLoginTime != null">
+                last_login_time,
+            </if>
+            <if test="map.lastLoginIp != null">
+                last_login_ip,
+            </if>
+            <if test="map.userLevel != null">
+                user_level,
+            </if>
+            <if test="map.nickname != null">
+                nickname,
+            </if>
+            <if test="map.mobile != null">
+                mobile,
+            </if>
+            <if test="map.avatar != null">
+                avatar,
+            </if>
+            <if test="map.weixinOpenid != null">
+                weixin_openid,
+            </if>
+            <if test="map.status != null">
+                `status`,
+            </if>
+            <if test="map.addTime != null">
+                add_time,
+            </if>
+            <if test="map.updateTime != null">
+                update_time,
+            </if>
+            <if test="map.deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="map.username != null">
+                #{map.username,jdbcType=VARCHAR},
+            </if>
+            <if test="map.password != null">
+                #{map.password,jdbcType=VARCHAR},
+            </if>
+            <if test="map.gender != null">
+                #{map.gender,jdbcType=TINYINT},
+            </if>
+            <if test="map.birthday != null">
+                #{map.birthday,jdbcType=DATE},
+            </if>
+            <if test="map.lastLoginTime != null">
+                #{map.lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.lastLoginIp != null">
+                #{map.lastLoginIp,jdbcType=VARCHAR},
+            </if>
+            <if test="map.userLevel != null">
+                #{map.userLevel,jdbcType=TINYINT},
+            </if>
+            <if test="map.nickname != null">
+                #{map.nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="map.mobile != null">
+                #{map.mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="map.avatar != null">
+                #{map.avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="map.weixinOpenid != null">
+                #{map.weixinOpenid,jdbcType=VARCHAR},
+            </if>
+            <if test="map.status != null">
+                #{map.status,jdbcType=TINYINT},
+            </if>
+            <if test="map.addTime != null">
+                #{map.addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.updateTime != null">
+                #{map.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.deleted != null">
+                #{map.deleted,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updative" parameterType="JsonData">
+        update litemall_user
+        <set>
+            <if test="map.username != null">
+                username = #{map.username,jdbcType=VARCHAR},
+            </if>
+            <if test="map.password != null">
+                `password` = #{map.password,jdbcType=VARCHAR},
+            </if>
+            <if test="map.gender != null">
+                gender = #{map.gender,jdbcType=TINYINT},
+            </if>
+            <if test="map.birthday != null">
+                birthday = #{map.birthday,jdbcType=DATE},
+            </if>
+            <if test="map.lastLoginTime != null">
+                last_login_time = #{map.lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.lastLoginIp != null">
+                last_login_ip = #{map.lastLoginIp,jdbcType=VARCHAR},
+            </if>
+            <if test="map.userLevel != null">
+                user_level = #{map.userLevel,jdbcType=TINYINT},
+            </if>
+            <if test="map.nickname != null">
+                nickname = #{map.nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="map.mobile != null">
+                mobile = #{map.mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="map.avatar != null">
+                avatar = #{map.avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="map.weixinOpenid != null">
+                weixin_openid = #{map.weixinOpenid,jdbcType=VARCHAR},
+            </if>
+            <if test="map.status != null">
+                `status` = #{map.status,jdbcType=TINYINT},
+            </if>
+            <if test="map.addTime != null">
+                add_time = #{map.addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.updateTime != null">
+                update_time = #{map.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.deleted != null">
+                deleted = #{map.deleted,jdbcType=BIT},
+            </if>
+        </set>
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.userId != null">
+                and id = #{map.userId,jdbcType=INTEGER}
+            </if>
+            <if test="map.weixinOpenid != null">
+                and weixin_openid = #{map.weixinOpenid,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </update>
+</mapper>

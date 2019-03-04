@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.goods.dao.GoodsSpecificationMapper">
+    <sql id="Base_Column_List">
+        id, goods_id, specification, `value`, pic_url, add_time, update_time, deleted
+    </sql>
+    <resultMap id="goodsSpecification" type="com.example.common.entity.GoodsSpecification">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="goods_id" jdbcType="INTEGER" property="goodsId"/>
+        <result column="specification" jdbcType="VARCHAR" property="specification"/>
+        <result column="value" jdbcType="VARCHAR" property="value"/>
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl"/>
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="deleted" jdbcType="BIT" property="deleted"/>
+    </resultMap>
+    <select id="selective" resultMap="goodsSpecification" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_goods_specification
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.goodsId != null">
+                and goods_id = #{map.goodsId,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+</mapper>

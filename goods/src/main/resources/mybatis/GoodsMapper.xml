@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.goods.dao.GoodsMapper">
+    <sql id="Base_Column_List">
+        id, goods_sn, `name`, category_id, brand_id, gallery, keywords, brief, is_on_sale,
+        sort_order, pic_url, share_url, is_new, is_hot, unit, counter_price, retail_price,
+        add_time, update_time, deleted, detail
+    </sql>
+    <resultMap id="goods" type="com.example.common.entity.Goods">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="goods_sn" jdbcType="VARCHAR" property="goodsSn"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
+        <result column="brand_id" jdbcType="INTEGER" property="brandId"/>
+        <result column="gallery" jdbcType="VARCHAR" property="gallery" typeHandler="com.example.common.mybatis.JsonStringArrayTypeHandler"/>
+        <result column="keywords" jdbcType="VARCHAR" property="keywords"/>
+        <result column="brief" jdbcType="VARCHAR" property="brief"/>
+        <result column="is_on_sale" jdbcType="BIT" property="isOnSale"/>
+        <result column="sort_order" jdbcType="SMALLINT" property="sortOrder"/>
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl"/>
+        <result column="share_url" jdbcType="VARCHAR" property="shareUrl"/>
+        <result column="is_new" jdbcType="BIT" property="isNew"/>
+        <result column="is_hot" jdbcType="BIT" property="isHot"/>
+        <result column="unit" jdbcType="VARCHAR" property="unit"/>
+        <result column="counter_price" jdbcType="DECIMAL" property="counterPrice"/>
+        <result column="retail_price" jdbcType="DECIMAL" property="retailPrice"/>
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="deleted" jdbcType="BIT" property="deleted"/>
+    </resultMap>
+
+    <select id="countByExample" resultType="java.lang.Integer">
+        select count(*) from litemall_goods
+    </select>
+
+    <select id="selective" resultMap="goods" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_goods
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.goodsId != null">
+                and id = #{map.goodsId,jdbcType=INTEGER}
+            </if>
+            <if test="map.categoryId != null">
+                and category_id = #{map.categoryId,jdbcType=INTEGER}
+            </if>
+            <if test="map.brandId != null">
+                and brand_id = #{map.brandId,jdbcType=INTEGER}
+            </if>
+            <if test="map.isHot != null">
+                and is_hot = #{map.isHot,jdbcType=INTEGER}
+            </if>
+            <if test="map.isNew != null">
+                and is_new = #{map.isNew,jdbcType=INTEGER}
+            </if>
+            <if test="map.isOnSale != null">
+                and is_on_sale = #{map.isOnSale,jdbcType=INTEGER}
+            </if>
+            <if test="map.deleted != null">
+                and deleted = #{map.deleted,jdbcType=INTEGER}
+            </if>
+            <if test="map.keyword != null and map.keyword != ''">
+                AND `name` like CONCAT('%', #{map.keyword},'%')
+            </if>
+        </trim>
+        <if test="map.sort != null and map.sort !='' and map.order != null and map.order != ''">
+            order by ${map.sort} ${map.order}
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.market.dao.GrouponRulesMapper">
+    <sql id="Base_Column_List">
+        id, goods_id, goods_name, pic_url, discount, discount_member, add_time, update_time, expire_time, deleted
+    </sql>
+    <resultMap id="grouponRules" type="com.example.common.entity.GrouponRules">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+        <result column="discount" jdbcType="DECIMAL" property="discount" />
+        <result column="discount_member" jdbcType="INTEGER" property="discountMember" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime" />
+        <result column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+    <select id="selective" resultMap="grouponRules" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_groupon_rules
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.goodsId != null">
+                and goods_id = #{map.goodsId,jdbcType=INTEGER}
+            </if>
+        </trim>
+        <if test="map.grouponSort != null and map.grouponSort !='' and map.grouponOrder != null and map.grouponOrder != ''">
+            order by ${map.grouponSort} ${map.grouponOrder}
+        </if>
+    </select>
+</mapper>
