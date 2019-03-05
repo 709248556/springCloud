@@ -1,9 +1,6 @@
 package com.example.common.response;
 
-import com.example.common.enums.AuthEnum;
-import com.example.common.enums.MarketClientEnum;
-import com.example.common.enums.OrderEnum;
-import com.example.common.enums.RestEnum;
+import com.example.common.enums.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -49,6 +46,11 @@ public class RestResponse<T> {
     public RestResponse(MarketClientEnum marketClientEnum) {
         this.setErrno(marketClientEnum.code);
         this.setErrmsg(marketClientEnum.errmsg);
+    }
+    public RestResponse error(GoodsEnum goodsEnum) {
+        this.setErrno(goodsEnum.code);
+        this.setErrmsg(goodsEnum.errmsg);
+        return this;
     }
 
 

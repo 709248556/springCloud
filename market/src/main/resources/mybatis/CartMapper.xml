@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.market.dao.CartMapper">
+    <sql id="Base_Column_List">
+        id, user_id, goods_id, goods_sn, goods_name, product_id, price, `number`, specifications, `checked`, pic_url, add_time, update_time, deleted
+    </sql>
+    <resultMap id="cart" type="com.example.common.entity.Cart">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="goods_id" jdbcType="INTEGER" property="goodsId"/>
+        <result column="goods_sn" jdbcType="VARCHAR" property="goodsSn"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="product_id" jdbcType="INTEGER" property="productId"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="number" jdbcType="SMALLINT" property="number"/>
+        <result column="specifications" jdbcType="VARCHAR" property="specifications"
+                typeHandler="com.example.common.mybatis.JsonStringArrayTypeHandler"/>
+        <result column="checked" jdbcType="BIT" property="checked"/>
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl"/>
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="deleted" jdbcType="BIT" property="deleted"/>
+    </resultMap>
+    <select id="selective" resultMap="cart" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_cart
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.cartId != null">
+                and id = #{map.cartId,jdbcType=INTEGER}
+            </if>
+            <if test="map.userId != null">
+                and user_id = #{map.userId,jdbcType=INTEGER}
+            </if>
+            <if test="map.goodsId != null">
+                and goods_id = #{map.goodsId,jdbcType=INTEGER}
+            </if>
+            <if test="map.productId != null">
+                and product_id = #{map.productId,jdbcType=INTEGER}
+            </if>
+            <if test="map.deleted != null">
+                and deleted = #{map.deleted,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insertive" parameterType="JsonData">
+        INSERT INTO litemall_cart
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="map.Id != null">
+                id,
+            </if>
+            <if test="map.userId != null">
+                `user_id`,
+            </if>
+            <if test="map.goodsId != null">
+                goods_id,
+            </if>
+            <if test="map.goodsSn != null and map.goodsSn != ''">
+                goods_sn,
+            </if>
+            <if test="map.goodsName != null and map.goodsName != ''">
+                goods_name,
+            </if>
+            <if test="map.productId != null">
+                product_id,
+            </if>
+            <if test="map.price != null">
+                price,
+            </if>
+            <if test="map.number != null">
+                `number`,
+            </if>
+            <if test="map.specifications != null and map.specifications != ''">
+                specifications,
+            </if>
+            <if test="map.checked != null">
+                checked,
+            </if>
+            <if test="map.picUrl != null and map.picUrl != ''">
+                pic_url,
+            </if>
+            <if test="map.status != null">
+                `status`,
+            </if>
+            <if test="map.addTime != null">
+                add_time,
+            </if>
+            <if test="map.updateTime != null">
+                update_time,
+            </if>
+            <if test="map.deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="map.Id != null">
+                #{map.Id,jdbcType=INTEGER},
+            </if>
+            <if test="map.userId != null">
+                #{map.userId,jdbcType=INTEGER},
+            </if>
+            <if test="map.goodsId != null">
+                #{map.goodsId,jdbcType=INTEGER},
+            </if>
+            <if test="map.goodsSn != null and map.goodsSn != ''">
+                #{map.goodsSn,jdbcType=VARCHAR},
+            </if>
+            <if test="map.goodsName != null and map.goodsName != ''">
+                #{map.goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="map.productId != null">
+                #{map.productId,jdbcType=INTEGER},
+            </if>
+            <if test="map.price != null">
+                #{map.price,jdbcType=DECIMAL},
+            </if>
+            <if test="map.number != null">
+                #{map.number,jdbcType=SMALLINT},
+            </if>
+            <if test="map.specifications != null">
+                #{map.specifications,jdbcType=VARCHAR,typeHandler=com.example.common.mybatis.JsonStringArrayTypeHandler},
+            </if>
+            <if test="map.checked != null">
+                #{map.checked,jdbcType=BIT},
+            </if>
+            <if test="map.picUrl != null">
+                #{map.picUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="map.addTime != null">
+                #{map.addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.updateTime != null">
+                #{map.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.deleted != null">
+                #{map.deleted,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updative" parameterType="JsonData">
+        UPDATE litemall_cart
+        <set>
+            <if test="map.userId != null">
+                user_id = #{map.userId,jdbcType=INTEGER},
+            </if>
+            <if test="map.goodsId != null">
+                goods_id = #{map.goodsId,jdbcType=INTEGER},
+            </if>
+            <if test="map.goodsSn != null">
+                goods_sn = #{map.goodsSn,jdbcType=VARCHAR},
+            </if>
+            <if test="map.goodsName != null">
+                goods_name = #{map.goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="map.productId != null">
+                product_id = #{map.productId,jdbcType=INTEGER},
+            </if>
+            <if test="map.price != null">
+                price = #{map.price,jdbcType=DECIMAL},
+            </if>
+            <if test="map.number != null">
+                `number` = #{map.number,jdbcType=SMALLINT},
+            </if>
+            <if test="map.specifications != null">
+                specifications =
+                #{map.specifications,jdbcType=VARCHAR,typeHandler=org.linlinjava.litemall.db.mybatis.JsonStringArrayTypeHandler},
+            </if>
+            <if test="map.checked != null">
+                `checked` = #{map.checked,jdbcType=BIT},
+            </if>
+            <if test="map.picUrl != null">
+                pic_url = #{map.picUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="map.addTime != null">
+                add_time = #{map.addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.updateTime != null">
+                update_time = #{map.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.deleted != null">
+                deleted = #{map.deleted,jdbcType=BIT},
+            </if>
+        </set>
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.cartId != null">
+                and id = #{map.cartId,jdbcType=INTEGER}
+            </if>
+            <if test="map.userId != null">
+                and user_id = #{map.userId,jdbcType=VARCHAR}
+            </if>
+            <if test="map.productId != null">
+                and product_id = #{map.productId,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </update>
+</mapper>

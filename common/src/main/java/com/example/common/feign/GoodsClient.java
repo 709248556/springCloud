@@ -2,6 +2,7 @@ package com.example.common.feign;
 
 import com.example.common.entity.Brand;
 import com.example.common.entity.Goods;
+import com.example.common.entity.GoodsProduct;
 import com.example.common.entity.OrderGoods;
 import com.example.common.hystrix.GoodsFallback;
 import com.example.common.hystrix.MarketFallback;
@@ -34,4 +35,6 @@ public interface GoodsClient {
     @GetMapping("/getOrderGoodsByOrderId")
     RestResponse<List<OrderGoods>> getOrderGoodsByOrderId(@RequestParam("orderId") int orderId,@RequestParam("orderGoodsDeleted") int orderGoodsDeleted);
 
+    @GetMapping("/getGoodsProductById")
+    RestResponse<GoodsProduct> getGoodsProductById(@RequestParam("productId") int productId);
 }

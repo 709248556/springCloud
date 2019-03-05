@@ -2,6 +2,7 @@ package com.example.common.hystrix;
 
 import com.example.common.entity.Brand;
 import com.example.common.entity.Goods;
+import com.example.common.entity.GoodsProduct;
 import com.example.common.entity.OrderGoods;
 import com.example.common.feign.GoodsClient;
 import com.example.common.response.RestResponse;
@@ -40,6 +41,11 @@ public class GoodsFallback implements GoodsClient{
 
     @Override
     public RestResponse<List<OrderGoods>> getOrderGoodsByOrderId(int orderId, int orderGoodsDeleted) {
+        return null;
+    }
+
+    @Override
+    public RestResponse<GoodsProduct> getGoodsProductById(int productId) {
         return null;
     }
 

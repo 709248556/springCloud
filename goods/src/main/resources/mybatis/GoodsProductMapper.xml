@@ -7,7 +7,7 @@
     <resultMap id="goodsProduct" type="com.example.common.entity.GoodsProduct">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
-        <result column="specifications" jdbcType="VARCHAR" property="specifications" />
+        <result column="specifications" jdbcType="VARCHAR" property="specifications" typeHandler="com.example.common.mybatis.JsonStringArrayTypeHandler"/>
         <result column="price" jdbcType="DECIMAL" property="price" />
         <result column="number" jdbcType="INTEGER" property="number" />
         <result column="url" jdbcType="VARCHAR" property="url" />
@@ -22,6 +22,9 @@
         <trim prefix="where" prefixOverrides="and">
             <if test="map.goodsId != null">
                 and goods_id = #{map.goodsId,jdbcType=INTEGER}
+            </if>
+            <if test="map.productId != null">
+                and id = #{map.productId,jdbcType=INTEGER}
             </if>
         </trim>
     </select>
