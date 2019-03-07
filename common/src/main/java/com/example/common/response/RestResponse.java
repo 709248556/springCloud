@@ -53,6 +53,12 @@ public class RestResponse<T> {
         return this;
     }
 
+    public RestResponse error(CouponEnum couponEnum) {
+        this.setErrno(couponEnum.code);
+        this.setErrmsg(couponEnum.errmsg);
+        return this;
+    }
+
 
     public RestResponse() {
         this(RestEnum.OK.code, RestEnum.OK.errmsg);

@@ -5,15 +5,15 @@
         id, user_id, value_id, `type`, add_time, update_time, deleted
     </sql>
     <resultMap id="collect" type="com.example.common.entity.Collect">
-        <id column="id" jdbcType="INTEGER" property="id" />
-        <result column="user_id" jdbcType="INTEGER" property="userId" />
-        <result column="value_id" jdbcType="INTEGER" property="valueId" />
-        <result column="type" jdbcType="TINYINT" property="type" />
-        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-        <result column="deleted" jdbcType="BIT" property="deleted" />
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="value_id" jdbcType="INTEGER" property="valueId"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="deleted" jdbcType="BIT" property="deleted"/>
     </resultMap>
-    <select id="countive" resultMap="collect" parameterType="JsonData">
+    <select id="countive" resultType="integer" parameterType="JsonData">
         select COUNT(*)
         FROM litemall_collect
         <trim prefix="where" prefixOverrides="and">
@@ -23,9 +23,78 @@
             <if test="map.goodsId != null">
                 and value_id = #{map.goodsId,jdbcType=INTEGER}
             </if>
-            <if test="map.collectType != null">
-                and `type` = #{map.collectType,jdbcType=INTEGER}
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=INTEGER}
             </if>
         </trim>
     </select>
+    <select id="selective" resultMap="collect" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_collect
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.userId != null">
+                and user_id = #{map.userId,jdbcType=INTEGER}
+            </if>
+            <if test="map.type != null">
+                and `type` = #{map.type,jdbcType=INTEGER}
+            </if>
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=INTEGER}
+            </if>
+            <if test="map.valueId != null">
+                and `value_id` = #{map.valueId,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+
+    <update id="deletive" parameterType="JsonData">
+        update litemall_collect set deleted = 1
+        where id = #{map.id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insertive" parameterType="JsonData">
+        insert into litemall_collect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="map.userId != null">
+                user_id,
+            </if>
+            <if test="map.valueId != null">
+                value_id,
+            </if>
+            <if test="map.type != null">
+                `type`,
+            </if>
+            <if test="map.addTime != null">
+                add_time,
+            </if>
+            <if test="map.updateTime != null">
+                update_time,
+            </if>
+            <if test="map.deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="map.userId != null">
+                #{map.userId,jdbcType=INTEGER},
+            </if>
+            <if test="map.valueId != null">
+                #{map.valueId,jdbcType=INTEGER},
+            </if>
+            <if test="map.type != null">
+                #{map.type,jdbcType=TINYINT},
+            </if>
+            <if test="map.addTime != null">
+                #{map.addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.updateTime != null">
+                #{map.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.deleted != null">
+                #{map.deleted,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+
 </mapper>

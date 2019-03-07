@@ -18,19 +18,33 @@ import java.util.List;
 public interface GoodsClient {
 
     @GetMapping("/getGoodsList")
-    RestResponse<List<Goods>> getNewGoodsList(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("order") String order, @RequestParam("isNew") int isNew, @RequestParam("isOnSale") int isOnSale, @RequestParam("deleted") int deleted);
+    RestResponse<List<Goods>> getNewGoodsList
+            (@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort,
+             @RequestParam("order") String order, @RequestParam("isNew") int isNew,
+             @RequestParam("isOnSale") int isOnSale, @RequestParam("deleted") int deleted);
 
     @GetMapping("/getGoodsList")
-    RestResponse<List<Goods>> getHotGoodsList(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort, @RequestParam("order") String order, @RequestParam("isHot") int isHot, @RequestParam("isOnSale") int isOnSale, @RequestParam("deleted") int deleted);
+    RestResponse<List<Goods>> getHotGoodsList
+            (@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort,
+             @RequestParam("order") String order, @RequestParam("isHot") int isHot, @RequestParam("isOnSale") int isOnSale,
+             @RequestParam("deleted") int deleted);
 
     @GetMapping("/getBrand")
-    RestResponse<List<Brand>> getBrand(@RequestParam("brandPage") int brandPage,@RequestParam("brandSize") int brandSize,@RequestParam("brandSort") String brandSort,@RequestParam("brandOrder") String brandOrder,@RequestParam("brandDeleted") int brandDeleted);
+    RestResponse<List<Brand>> getBrand
+            (@RequestParam("brandPage") int brandPage,@RequestParam("brandSize") int brandSize,
+             @RequestParam("brandSort") String brandSort,@RequestParam("brandOrder") String brandOrder,
+             @RequestParam("brandDeleted") int brandDeleted);
 
     @PostMapping("/getGoodsListByCategoryIdList")
-    RestResponse<List<Goods>> getGoodsListByCategoryIdList(@RequestParam("categoryIdList")List<Integer> categoryIdList,@RequestParam("page")int page,@RequestParam("size")int size,@RequestParam("sort") String sort, @RequestParam("order")String order);
+    RestResponse<List<Goods>> getGoodsListByCategoryIdList(@RequestParam("categoryIdList")List<Integer> categoryIdList,
+                                                           @RequestParam("page")int page,@RequestParam("size")int size,
+                                                           @RequestParam("sort") String sort, @RequestParam("order")String order);
 
     @GetMapping("/getGoodsById")
     RestResponse<Goods> getGoodsById(@RequestParam("goodsId") int goodsId);
+
+    @GetMapping("/getGoodsById")
+    RestResponse<Goods> getSingleGoods(@RequestParam("goodsId") int goodsId,@RequestParam("isOnSale") int isOnSale,@RequestParam("deleted") int deleted);
 
     @GetMapping("/getOrderGoodsByOrderId")
     RestResponse<List<OrderGoods>> getOrderGoodsByOrderId(@RequestParam("orderId") int orderId,@RequestParam("orderGoodsDeleted") int orderGoodsDeleted);

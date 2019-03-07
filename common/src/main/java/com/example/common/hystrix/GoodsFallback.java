@@ -40,6 +40,11 @@ public class GoodsFallback implements GoodsClient{
     }
 
     @Override
+    public RestResponse<Goods> getSingleGoods(int goodsId, int isOnSale, int deleted) {
+        return null;
+    }
+
+    @Override
     public RestResponse<List<OrderGoods>> getOrderGoodsByOrderId(int orderId, int orderGoodsDeleted) {
         return null;
     }

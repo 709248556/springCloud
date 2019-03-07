@@ -188,7 +188,7 @@ public class CartController {
      * @return 用户购物车信息
      */
     @GetMapping("/index")
-    public Object index(JsonData jsonData) {
+    public RestResponse index(JsonData jsonData) {
         int userId = redisUtil.getUserId(jsonData.get(TokenConstant.TOKEN).toString());
         jsonData.put("userId",userId);
         jsonData.put("deleted",0);

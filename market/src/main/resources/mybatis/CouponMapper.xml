@@ -36,13 +36,13 @@
                 and id = #{map.couponId,jdbcType=INTEGER}
             </if>
             <if test="map.couponType != null">
-                and type = #{map.couponType,jdbcType=INTEGER}
+                and `type` = #{map.couponType,jdbcType=INTEGER}
             </if>
-            <if test="map.couponId != null">
-                and goods_id = #{map.goodsId,jdbcType=INTEGER}
+            <if test="map.couponStatus != null">
+                and `status` = #{map.couponStatus,jdbcType=INTEGER}
             </if>
-            <if test="map.couponId != null">
-                and goods_id = #{map.goodsId,jdbcType=INTEGER}
+            <if test="map.couponDeleted != null">
+                and `deleted` = #{map.couponDeleted,jdbcType=INTEGER}
             </if>
         </trim>
     </select>

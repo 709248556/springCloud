@@ -1,6 +1,9 @@
 package com.example.zuul.filter;
 
 import com.example.common.constants.TokenConstant;
+import com.example.common.enums.RestEnum;
+import com.example.common.exception.UnLoginExceptionHandler;
+import com.example.common.response.RestResponse;
 import com.example.common.util.CookieUtil;
 import com.example.common.util.RedisUtil;
 import com.netflix.zuul.ZuulFilter;
@@ -17,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.example.zuul.Constants.FilterConstants.PRE_DECORATION_FILTER_ORDER;
 import static com.example.zuul.Constants.FilterConstants.PRE_TYPE;
+import com.alibaba.fastjson.JSON;
 
 
 @Component
@@ -68,6 +72,11 @@ public class TokenFilter extends ZuulFilter {
             redisUtil.expire(tokenValue, TokenConstant.TIME);
         } else {
             //TODO 抛出异常，跳到登陆页面，提示
+//            RequestContext ctx = RequestContext.getCurrentContext();
+//            RestResponse restResponse = new RestResponse();
+//            ctx.setSendZuulResponse(false);//不需要进行路由，也就是不会调用api服务提供者
+//            //返回内容给客户端
+//            ctx.setResponseBody(JSON.toJSONString(restResponse.error(RestEnum.UNLOGIN)));// 返回错误内容
         }
         return null;
     }

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.user.dao.CouponUserMapper">
+    <sql id="Base_Column_List">
+        id, user_id, coupon_id, `status`, used_time, start_time, end_time, order_id, add_time,
+          update_time, deleted
+    </sql>
+    <resultMap id="couponUser" type="com.example.common.entity.CouponUser">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="coupon_id" jdbcType="INTEGER" property="couponId" />
+        <result column="status" jdbcType="SMALLINT" property="status" />
+        <result column="used_time" jdbcType="TIMESTAMP" property="usedTime" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="order_id" jdbcType="INTEGER" property="orderId" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+    <select id="selective" resultMap="couponUser" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_coupon_user
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.couponId != null">
+                and coupon_id = #{map.couponId,jdbcType=INTEGER}
+            </if>
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=INTEGER}
+            </if>
+            <if test="map.userId != null">
+                and `user_id` = #{map.userId,jdbcType=INTEGER}
+            </if>
+            <if test="map.status != null">
+                and `status` = #{map.status,jdbcType=INTEGER}
+            </if>
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=INTEGER}
+            </if>
+        </trim>
+        <if test="map.sort != null and map.sort !='' and map.order != null and map.order != ''">
+            order by ${map.sort} ${map.order}
+        </if>
+    </select>
+
+
+    <insert id="insertive" parameterType="JsonData">
+        insert into litemall_coupon_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="map.userId != null">
+                user_id,
+            </if>
+            <if test="map.couponId != null">
+                coupon_id,
+            </if>
+            <if test="map.status != null">
+                `status`,
+            </if>
+            <if test="map.usedTime != null">
+                used_time,
+            </if>
+            <if test="map.startTime != null">
+                start_time,
+            </if>
+            <if test="map.endTime != null">
+                end_time,
+            </if>
+            <if test="map.orderId != null">
+                order_id,
+            </if>
+            <if test="map.addTime != null">
+                add_time,
+            </if>
+            <if test="map.updateTime != null">
+                update_time,
+            </if>
+            <if test="map.deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="map.userId != null">
+                #{map.userId,jdbcType=INTEGER},
+            </if>
+            <if test="map.couponId != null">
+                #{map.couponId,jdbcType=INTEGER},
+            </if>
+            <if test="map.status != null">
+                #{map.status,jdbcType=SMALLINT},
+            </if>
+            <if test="map.usedTime != null">
+                #{map.usedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.startTime != null">
+                #{map.startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.endTime != null">
+                #{map.endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.orderId != null">
+                #{map.orderId,jdbcType=INTEGER},
+            </if>
+            <if test="map.addTime != null">
+                #{map.addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.updateTime != null">
+                #{map.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.deleted != null">
+                #{map.deleted,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+</mapper>

@@ -1,5 +1,6 @@
 package com.example.goods.controller;
 
+import com.example.common.constants.TokenConstant;
 import com.example.common.constants.TypeConstant;
 import com.example.common.entity.*;
 import com.example.common.enums.RestEnum;
@@ -7,6 +8,7 @@ import com.example.common.feign.MarketClient;
 import com.example.common.feign.UserClient;
 import com.example.common.response.RestResponse;
 import com.example.common.util.JsonData;
+import com.example.common.util.RedisUtil;
 import com.example.goods.service.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +47,8 @@ public class GoodsController {
     @Autowired
     private UserClient userClient;
 
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 商品详情
@@ -137,9 +141,10 @@ public class GoodsController {
 
         // 用户收藏
         int userHasCollect = 0;
-        if (!jsonData.containsKey("userId")) {
+        if (jsonData.containsKey(TokenConstant.TOKEN)) {
+            int userId = redisUtil.getUserId(jsonData.get(TokenConstant.TOKEN).toString());
             try {
-                RestResponse<Integer> restResponse = userClient.getCollectCountNum(Integer.valueOf(jsonData.get("id").toString()), Integer.valueOf(jsonData.get("userId").toString()), TypeConstant.GOODS_TYPE);
+                RestResponse<Integer> restResponse = userClient.getCollectCountNum(Integer.valueOf(jsonData.get("id").toString()),userId, TypeConstant.GOODS_TYPE);
                 if (restResponse.getErrno() != RestEnum.OK.code) {
                     log.error("GoodsController.detail方法错误 restResponse.getErrno() != RestEnum.OK.code，Errno为:" + restResponse.getErrno() + "错误信息为:" + restResponse.getErrmsg());
                     //TODO 抛出异常
@@ -210,7 +215,7 @@ public class GoodsController {
 //        }
 
         //查询列表数据
-        if (Integer.valueOf(jsonData.get("categoryId").toString()) == 0) {
+        if (jsonData.containsKey("categoryId")&&Integer.valueOf(jsonData.get("categoryId").toString()) == 0) {
             jsonData.remove("categoryId");
         }
 
@@ -232,7 +237,7 @@ public class GoodsController {
                 }
                 categoryList = restResponse.getData();
             } catch (Exception e) {
-                log.error("GoodsController.list", e.getMessage());
+                log.error("GoodsController.list ERROR", e.getMessage());
             }
         } else {
             categoryList = new ArrayList<>(0);

@@ -24,7 +24,14 @@ public class GlobalExceptionHandler {
             //TODO 异常信息写进restResponse
             restResponse.setErrno(illegalParamsException.getCode());
             restResponse.setErrmsg(illegalParamsException.getMsg());
-        } else {
+        }
+        if (throwable instanceof UnLoginExceptionHandler) {
+            UnLoginExceptionHandler unLoginExceptionHandler = (UnLoginExceptionHandler)throwable;
+            //TODO 异常信息写进restResponse
+            restResponse.setErrno(unLoginExceptionHandler.getCode());
+            restResponse.setErrmsg(unLoginExceptionHandler.getMsg());
+        }
+        else {
             log.info("出现错误");
             restResponse.error(RestEnum.SERIOUS);
         }
