@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.user.dao.AddressMapper">
+    <sql id="Base_Column_List">
+        id, `name`, user_id, province_id, city_id, area_id, address, mobile, is_default, add_time, update_time, deleted
+    </sql>
+    <resultMap id="address" type="com.example.common.entity.Address">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="province_id" jdbcType="INTEGER" property="provinceId" />
+        <result column="city_id" jdbcType="INTEGER" property="cityId" />
+        <result column="area_id" jdbcType="INTEGER" property="areaId" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+        <result column="is_default" jdbcType="BIT" property="isDefault" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+    <select id="selective" resultMap="address" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_address
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=INTEGER}
+            </if>
+            <if test="map.userId != null">
+                and `user_id` = #{map.userId,jdbcType=INTEGER}
+            </if>
+            <if test="map.id != null">
+                and `id` = #{map.id,jdbcType=INTEGER}
+            </if>
+        </trim>
+        <if test="map.sort != null and map.sort !='' and map.order != null and map.order != ''">
+            order by ${map.sort} ${map.order}
+        </if>
+    </select>
+
+    <update id="deletive" parameterType="JsonData">
+        update litemall_address set deleted = 1
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.id != null">
+                and id = #{map.id,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </update>
+
+    <update id="updative" parameterType="JsonData">
+        update litemall_address
+        <set>
+            <if test="map.id != null">
+                id = #{map.id,jdbcType=INTEGER},
+            </if>
+            <if test="map.name != null">
+                `name` = #{map.name,jdbcType=VARCHAR},
+            </if>
+            <if test="map.userId != null">
+                user_id = #{map.userId,jdbcType=INTEGER},
+            </if>
+            <if test="map.provinceId != null">
+                province_id = #{map.provinceId,jdbcType=INTEGER},
+            </if>
+            <if test="map.cityId != null">
+                city_id = #{map.cityId,jdbcType=INTEGER},
+            </if>
+            <if test="map.areaId != null">
+                area_id = #{map.areaId,jdbcType=INTEGER},
+            </if>
+            <if test="map.address != null">
+                address = #{map.address,jdbcType=VARCHAR},
+            </if>
+            <if test="map.mobile != null">
+                mobile = #{map.mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="map.isDefault != null">
+                is_default = #{map.isDefault,jdbcType=BIT},
+            </if>
+            <if test="map.addTime != null">
+                add_time = #{map.addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.updateTime != null">
+                update_time = #{map.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.deleted != null">
+                deleted = #{map.deleted,jdbcType=BIT},
+            </if>
+        </set>
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.userId != null">
+                and user_id = #{map.userId,jdbcType=INTEGER}
+            </if>
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=VARCHAR}
+            </if>
+            <if test="map.id != null">
+                and `id` = #{map.id,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </update>
+
+    <insert id="insertive" parameterType="JsonData">
+        insert into litemall_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="map.name != null">
+                `name`,
+            </if>
+            <if test="map.userId != null">
+                user_id,
+            </if>
+            <if test="map.provinceId != null">
+                province_id,
+            </if>
+            <if test="map.cityId != null">
+                city_id,
+            </if>
+            <if test="map.areaId != null">
+                area_id,
+            </if>
+            <if test="map.address != null">
+                address,
+            </if>
+            <if test="map.mobile != null">
+                mobile,
+            </if>
+            <if test="map.isDefault != null">
+                is_default,
+            </if>
+            <if test="map.addTime != null">
+                add_time,
+            </if>
+            <if test="map.updateTime != null">
+                update_time,
+            </if>
+            <if test="map.deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="map.name != null">
+                #{map.name,jdbcType=VARCHAR},
+            </if>
+            <if test="map.userId != null">
+                #{map.userId,jdbcType=INTEGER},
+            </if>
+            <if test="map.provinceId != null">
+                #{map.provinceId,jdbcType=INTEGER},
+            </if>
+            <if test="map.cityId != null">
+                #{map.cityId,jdbcType=INTEGER},
+            </if>
+            <if test="map.areaId != null">
+                #{map.areaId,jdbcType=INTEGER},
+            </if>
+            <if test="map.address != null">
+                #{map.address,jdbcType=VARCHAR},
+            </if>
+            <if test="map.mobile != null">
+                #{map.mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="map.isDefault != null">
+                #{map.isDefault,jdbcType=BIT},
+            </if>
+            <if test="map.addTime != null">
+                #{map.addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.updateTime != null">
+                #{map.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.deleted != null">
+                #{map.deleted,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

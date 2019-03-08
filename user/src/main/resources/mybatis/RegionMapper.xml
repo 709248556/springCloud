@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.user.dao.RegionMapper">
+    <sql id="Base_Column_List">
+        id, pid, `name`, `type`, code
+    </sql>
+    <resultMap id="region" type="com.example.common.entity.Region">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="pid" jdbcType="INTEGER" property="pid" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="type" jdbcType="TINYINT" property="type" />
+        <result column="code" jdbcType="INTEGER" property="code" />
+    </resultMap>
+    <select id="selective" resultMap="region" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_region
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.notType != null">
+                and (`type` = 1 OR `type` = 2 OR `type` = 3)
+            </if>
+            <if test="map.id != null">
+                and id = #{map.id,jdbcType=INTEGER}
+            </if>
+            <if test="map.pid != null">
+                and pid = #{map.pid,jdbcType=INTEGER}
+            </if>
+        </trim>
+        <if test="map.sort != null and map.sort !='' and map.order != null and map.order != ''">
+            order by ${map.sort} ${map.order}
+        </if>
+    </select>
+
+    <!--<update id="deletive" parameterType="JsonData">-->
+        <!--update litemall_footprint set deleted = 1-->
+        <!--<trim prefix="where" prefixOverrides="and">-->
+            <!--<if test="map.footprintId != null">-->
+                <!--and id = #{map.footprintId,jdbcType=INTEGER}-->
+            <!--</if>-->
+        <!--</trim>-->
+    <!--</update>-->
+</mapper>

@@ -159,7 +159,7 @@ public class GoodsController {
 //        // 记录用户的足迹 异步处理
 //        if (userId != null) {
 //            executorService.execute(() -> {
-//                LitemallFootprint footprint = new LitemallFootprint();
+//                Footprint footprint = new Footprint();
 //                footprint.setUserId(userId);
 //                footprint.setGoodsId(id);
 //                footprintService.add(footprint);

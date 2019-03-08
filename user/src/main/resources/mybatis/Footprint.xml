@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.user.dao.FootprintMapper">
+    <sql id="Base_Column_List">
+       id, user_id, goods_id, add_time, update_time, deleted
+    </sql>
+    <resultMap id="footprint" type="com.example.common.entity.Footprint">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+    <select id="selective" resultMap="footprint" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_footprint
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.footprintId != null">
+                and id = #{map.footprintId,jdbcType=INTEGER}
+            </if>
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=INTEGER}
+            </if>
+            <if test="map.userId != null">
+                and `user_id` = #{map.userId,jdbcType=INTEGER}
+            </if>
+        </trim>
+        <if test="map.sort != null and map.sort !='' and map.order != null and map.order != ''">
+            order by ${map.sort} ${map.order}
+        </if>
+    </select>
+
+    <update id="deletive" parameterType="JsonData">
+        update litemall_footprint set deleted = 1
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.footprintId != null">
+                and id = #{map.footprintId,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </update>
+</mapper>

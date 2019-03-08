@@ -12,8 +12,6 @@
         <module name="eurekaservice" />
         <module name="goods" />
         <module name="market" />
-        <module name="order" />
-        <module name="service" />
         <module name="user" />
         <module name="zuul" />
       </profile>
