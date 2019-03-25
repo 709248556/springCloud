@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface OrderMapper {
     List<Order> selective(JsonData jsonData);
+    int insert(Order order);
+    int updative(JsonData jsonData);
 }

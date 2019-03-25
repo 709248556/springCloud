@@ -9,7 +9,7 @@ import com.example.common.util.JsonData;
 import com.example.common.util.RedisUtil;
 import com.example.common.util.RegexUtil;
 import com.example.user.service.AddressService;
-import com.example.user.service.GetRegionService;
+import com.example.user.service.Impl.GetRegionService;
 import com.example.user.service.RegionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,6 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/address")
 public class AddressController extends GetRegionService {
 
     @Autowired
@@ -43,7 +42,7 @@ public class AddressController extends GetRegionService {
      * @param //userId 用户ID
      * @return 收货地址列表
      */
-    @GetMapping("list")
+    @GetMapping("/address/list")
     public RestResponse list(JsonData jsonData) {
         RestResponse restResponse = new RestResponse();
         if (!jsonData.containsKey(TokenConstant.TOKEN)) {
@@ -81,7 +80,7 @@ public class AddressController extends GetRegionService {
      * @param //id     收货地址ID
      * @return 收货地址详情
      */
-    @GetMapping("detail")
+    @GetMapping("/address/detail")
     public Object detail(JsonData jsonData) {
         RestResponse restResponse = new RestResponse();
         if (!jsonData.containsKey(TokenConstant.TOKEN)) {
@@ -175,7 +174,7 @@ public class AddressController extends GetRegionService {
      * @param address  用户收货地址
      * @return 添加或更新操作结果
      */
-    @PostMapping("save")
+    @PostMapping("/address/save")
     public Object save(@RequestBody Address address, HttpServletRequest request) {
         JsonData jsonData = new JsonData(request);
         RestResponse restResponse = new RestResponse();
@@ -237,7 +236,7 @@ public class AddressController extends GetRegionService {
      * @param address  用户收货地址，{ id: xxx }
      * @return 删除操作结果
      */
-    @PostMapping("delete")
+    @PostMapping("/address/delete")
     public Object delete(@RequestBody Address address, HttpServletRequest request) {
         JsonData jsonData = new JsonData(request);
         RestResponse restResponse = new RestResponse();
@@ -251,6 +250,11 @@ public class AddressController extends GetRegionService {
         jsonData.put("id", id);
         addressService.deletive(jsonData);
         return restResponse;
+    }
+
+    @GetMapping("/getAddress")
+    public RestResponse<List<Address>> getAddress(JsonData jsonData){
+        return new RestResponse<>(addressService.selective(jsonData));
     }
 
 }

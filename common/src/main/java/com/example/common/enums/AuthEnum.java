@@ -2,7 +2,7 @@ package com.example.common.enums;
 
 public enum AuthEnum {
     UNAUTHZ(506, "无操作权限"),
-
+    ADMIN_INVALID_ACCOUNT(605,"用户帐号已锁定不可用"),
     AUTH_INVALID_ACCOUNT(700, "账号密码不对"),
     AUTH_CAPTCHA_UNSUPPORT(701, "小程序后台验证码服务不支持"),
     AUTH_CAPTCHA_FREQUENCY(702, "验证码未超时1分钟，不能发送"),

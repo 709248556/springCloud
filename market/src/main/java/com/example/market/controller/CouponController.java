@@ -1,10 +1,9 @@
 package com.example.market.controller;
 
 import com.example.common.constants.CouponConstant;
+import com.example.common.constants.CouponUserConstant;
 import com.example.common.constants.TokenConstant;
-import com.example.common.entity.Coupon;
-import com.example.common.entity.CouponUser;
-import com.example.common.entity.CouponVo;
+import com.example.common.entity.*;
 import com.example.common.enums.CouponEnum;
 import com.example.common.enums.RestEnum;
 import com.example.common.feign.UserClient;
@@ -12,7 +11,10 @@ import com.example.common.response.RestResponse;
 import com.example.common.util.JacksonUtil;
 import com.example.common.util.JsonData;
 import com.example.common.util.RedisUtil;
+import com.example.market.service.CartService;
 import com.example.market.service.CouponService;
+import com.example.market.service.GrouponRulesService;
+import com.example.market.service.Impl.CouponVerifyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.util.JAXBSource;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +45,15 @@ public class CouponController {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private GrouponRulesService grouponRulesService;
+
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private CouponVerifyService couponVerifyService;
 
     /**
      * 优惠券领取
@@ -216,5 +228,90 @@ public class CouponController {
         }
 
         return couponVoList;
+    }
+
+    /**
+     * 当前购物车下单商品订单可用优惠券
+     *
+     * @param //userId
+     * @param //cartId
+     * @param //grouponRulesId
+     * @return
+     */
+    @GetMapping("/coupon/selectlist")
+    public Object selectlist(JsonData jsonData) {
+        RestResponse restResponse = new RestResponse();
+        if (!jsonData.containsKey(TokenConstant.TOKEN)) {
+            return restResponse.error(RestEnum.UNLOGIN);
+        }
+        Integer userId = redisUtil.getUserId(jsonData.get(TokenConstant.TOKEN).toString());
+        // 团购优惠
+        BigDecimal grouponPrice = new BigDecimal(0.00);
+        JsonData jsonData1 = new JsonData();
+        jsonData1.put("id",jsonData.get("grouponRulesId"));
+        jsonData.put("deleted",0);
+        List<GrouponRules> grouponRulesList = grouponRulesService.selective(jsonData1);
+        if (grouponRulesList.size() != 0) {
+            grouponPrice = grouponRulesList.get(0).getDiscount();
+        }
+
+        // 商品价格
+        List<Cart> checkedGoodsList = null;
+        Integer cartId = Integer.valueOf(jsonData.get("cartId").toString());
+        if (cartId == null || cartId.equals(0)) {
+            JsonData jsonData2 = new JsonData();
+            jsonData2.put("userId",userId);
+            jsonData2.put("checked",1);
+            jsonData2.put("deleted",0);
+            checkedGoodsList = cartService.selective(jsonData2);
+        } else {
+            JsonData jsonData2 = new JsonData();
+            jsonData2.put("cartId",cartId);
+            Cart cart = cartService.selective(jsonData2).get(0);
+            if (cart == null) {
+                return restResponse.error(RestEnum.BADARGUMENT);
+            }
+            checkedGoodsList = new ArrayList<>(1);
+            checkedGoodsList.add(cart);
+        }
+        BigDecimal checkedGoodsPrice = new BigDecimal(0.00);
+        for (Cart cart : checkedGoodsList) {
+            //  只有当团购规格商品ID符合才进行团购优惠
+            if (grouponRulesList.size() != 0 && grouponRulesList.get(0).getGoodsId().equals(cart.getGoodsId())) {
+                checkedGoodsPrice = checkedGoodsPrice.add(cart.getPrice().subtract(grouponPrice).multiply(new BigDecimal(cart.getNumber())));
+            } else {
+                checkedGoodsPrice = checkedGoodsPrice.add(cart.getPrice().multiply(new BigDecimal(cart.getNumber())));
+            }
+        }
+
+        // 计算优惠券可用情况
+        List<CouponUser> couponUserList = null;
+        try {
+            RestResponse<List<CouponUser>> couponUserRestRespone = userClient.getCouponUser(userId, CouponUserConstant.STATUS_USABLE);
+            if (couponUserRestRespone.getErrno() != RestEnum.OK.code) {
+                log.error("couponController.selectlist错误 goodsRestResponse.getErrno() != RestEnum.OK.code，Errno为:" + couponUserRestRespone.getErrno() + "错误信息为:" + couponUserRestRespone.getErrmsg());
+                //TODO 抛出异常
+            }
+            couponUserList = couponUserRestRespone.getData();
+        }catch (Exception e){
+            log.error("couponController.selectlist错误",e.getMessage());
+        }
+        List<CouponUser> availableCouponUserList = new ArrayList<>(couponUserList.size());
+        for (CouponUser couponUser : couponUserList) {
+            Coupon coupon = couponVerifyService.checkCoupon(userId, couponUser.getCouponId(), checkedGoodsPrice);
+            if (coupon == null) {
+                continue;
+            }
+            availableCouponUserList.add(couponUser);
+        }
+
+        List<CouponVo> couponVoList = change(availableCouponUserList);
+
+        return restResponse.success(couponVoList);
+    }
+
+    @GetMapping("/getCouponVerify")
+    public RestResponse getCouponVerify(Integer userId, Integer couponId, BigDecimal checkedGoodsPrice){
+        return new RestResponse(couponVerifyService.checkCoupon(userId, couponId, checkedGoodsPrice));
     }
 }

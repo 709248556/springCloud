@@ -19,4 +19,9 @@ public class GoodsProductServiceImpl implements GoodsProductService {
     public List<GoodsProduct> selective(JsonData jsonData) {
         return goodsProductMapper.selective(jsonData);
     }
+
+    @Override
+    public int reduceStock(int productId, int number) {
+        return goodsProductMapper.reduceStock(productId, number);
+    }
 }

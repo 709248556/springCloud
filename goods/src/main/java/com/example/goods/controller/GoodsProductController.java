@@ -7,6 +7,8 @@ import com.example.goods.service.GoodsProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -19,5 +21,10 @@ public class GoodsProductController {
     @GetMapping("/getGoodsProductById")
     public RestResponse<GoodsProduct> getGoodsProductByProductId(JsonData jsonData){
         return new RestResponse<>(goodsProductService.selective(jsonData).get(0));
+    }
+
+    @PostMapping("/reduceStock")
+    public RestResponse<Integer> reduceStock(int productId,int number){
+        return new RestResponse<>(goodsProductService.reduceStock(productId,number));
     }
 }

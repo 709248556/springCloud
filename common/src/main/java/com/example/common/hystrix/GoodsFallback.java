@@ -54,5 +54,15 @@ public class GoodsFallback implements GoodsClient{
         return null;
     }
 
+    @Override
+    public RestResponse<Integer> addOrderGoods(OrderGoods orderGoods) {
+        return null;
+    }
+
+    @Override
+    public RestResponse<Integer> reduceStock(int productId, int number) {
+        return null;
+    }
+
 
 }

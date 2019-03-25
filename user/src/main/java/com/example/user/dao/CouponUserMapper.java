@@ -8,4 +8,5 @@ import java.util.List;
 public interface CouponUserMapper {
     List<CouponUser> selective(JsonData jsonData);
     int insertive(JsonData jsonData);
+    int updative(JsonData jsonData);
 }

@@ -32,6 +32,9 @@
             <if test="map.id != null">
                 and `id` = #{map.id,jdbcType=INTEGER}
             </if>
+            <if test="map.isDefault != null">
+                and `is_default` = #{map.isDefault,jdbcType=INTEGER}
+            </if>
         </trim>
         <if test="map.sort != null and map.sort !='' and map.order != null and map.order != ''">
             order by ${map.sort} ${map.order}

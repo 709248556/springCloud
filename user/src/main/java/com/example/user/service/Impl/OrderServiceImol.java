@@ -19,4 +19,14 @@ public class OrderServiceImol implements OrderService {
     public List<Order> selective(JsonData jsonData) {
         return orderMapper.selective(jsonData);
     }
+
+    @Override
+    public int insert(Order order) {
+        return orderMapper.insert(order);
+    }
+
+    @Override
+    public int updative(JsonData jsonData) {
+        return orderMapper.updative(jsonData);
+    }
 }

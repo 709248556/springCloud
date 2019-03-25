@@ -2,8 +2,11 @@ package com.example.common.util;
 
 import com.example.common.entity.Order;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /*
  * 订单流程：下单成功－》支付订单－》发货－》收货
@@ -88,5 +91,21 @@ public class OrderUtil {
         return status;
     }
 
-
+    // TODO 这里应该产生一个唯一的订单，但是实际上这里仍然存在两个订单相同的可能性
+    public static String generateOrderSn(Integer userId) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String now = df.format(LocalDate.now());
+        String orderSn = now + userId +getRandomNum(6) ;
+        return orderSn;
+    }
+    private static String getRandomNum(Integer num) {
+        String base = "0123456789";
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < num; i++) {
+            int number = random.nextInt(base.length());
+            sb.append(base.charAt(number));
+        }
+        return sb.toString();
+    }
 }

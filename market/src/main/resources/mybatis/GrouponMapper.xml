@@ -28,6 +28,9 @@
             <if test="map.grouponDeleted != null">
                 and deleted = #{map.grouponDeleted}
             </if>
+            <if test="map.grouponId != null">
+                and groupon_id = #{map.grouponId}
+            </if>
         </trim>
         <if test="map.grouponSort != null and map.grouponSort !='' and map.grouponOrder != null and map.grouponOrder != ''">
             order by ${map.grouponSort} ${map.grouponOrder}

@@ -1,6 +1,7 @@
-package com.example.user.service;
+package com.example.user.service.Impl;
 
 import com.example.common.entity.Region;
+import com.example.user.service.RegionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

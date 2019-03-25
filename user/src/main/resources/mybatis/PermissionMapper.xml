@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.user.dao.PermissionDao">
+    <sql id="Base_Column_List">
+        id, role_id, permission, add_time, update_time, deleted
+    </sql>
+    <resultMap id="permission" type="com.example.common.entity.Permission">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="role_id" jdbcType="INTEGER" property="roleId" />
+        <result column="permission" jdbcType="VARCHAR" property="permission" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+    <select id="selective" resultMap="permission" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_permission
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.username != null">
+                and username = #{map.username,jdbcType=INTEGER}
+            </if>
+            <if test="map.deleted != null">
+                and deleted = #{map.deleted,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </select>
+
+</mapper>

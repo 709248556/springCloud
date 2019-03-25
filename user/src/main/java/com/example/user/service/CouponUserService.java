@@ -8,4 +8,5 @@ import java.util.List;
 public interface CouponUserService {
     List<CouponUser> selective(JsonData jsonData);
     int insertive (JsonData jsonData);
+    int updative(JsonData jsonData);
 }

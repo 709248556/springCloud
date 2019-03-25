@@ -9,4 +9,6 @@ public interface CartMapper {
     List<Cart> selective(JsonData jsonData);
     int insertive(JsonData jsonData);
     int updative(JsonData jsonData);
+    int deletive(JsonData jsonData);
+    int insert(Cart cart);
 }

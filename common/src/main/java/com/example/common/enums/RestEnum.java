@@ -9,6 +9,7 @@ public enum RestEnum {
     UNSUPPORT(503, "业务不支持"),
     UPDATEDDATEEXPIRED(504, "更新数据已经失效"),
     UPDATEDDATAFAILED(505, "更新数据失败"),
+    UNKONWERROR(506, "未知错误，请联系管理员"),
 
     GROUPON_EXPIRED(730, "团购活动已过期!");
 

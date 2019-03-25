@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface GoodsProductService {
     List<GoodsProduct> selective(JsonData jsonData);
+    int reduceStock(int productId,int number);
 }

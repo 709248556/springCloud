@@ -21,8 +21,17 @@
         <include refid="Base_Column_List"/>
         FROM litemall_groupon_rules
         <trim prefix="where" prefixOverrides="and">
+            <if test="map.grouponRulesId != null">
+                and `id` = #{map.grouponRulesId,jdbcType=INTEGER}
+            </if>
             <if test="map.goodsId != null">
                 and goods_id = #{map.goodsId,jdbcType=INTEGER}
+            </if>
+            <if test="map.id != null">
+                and id = #{map.id,jdbcType=INTEGER}
+            </if>
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=INTEGER}
             </if>
         </trim>
         <if test="map.grouponSort != null and map.grouponSort !='' and map.grouponOrder != null and map.grouponOrder != ''">

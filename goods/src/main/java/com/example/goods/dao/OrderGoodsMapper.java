@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface OrderGoodsMapper {
     List<OrderGoods> selective(JsonData jsonData);
+    int insert(OrderGoods orderGoods);
 }

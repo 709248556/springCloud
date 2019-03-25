@@ -39,7 +39,10 @@
                 and product_id = #{map.productId,jdbcType=INTEGER}
             </if>
             <if test="map.deleted != null">
-                and deleted = #{map.deleted,jdbcType=INTEGER}
+                and `deleted` = #{map.deleted,jdbcType=INTEGER}
+            </if>
+            <if test="map.checked != null">
+                and `checked` = #{map.checked,jdbcType=INTEGER}
             </if>
         </trim>
     </select>
@@ -193,6 +196,117 @@
             <if test="map.productId != null">
                 and product_id = #{map.productId,jdbcType=VARCHAR}
             </if>
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=VARCHAR}
+            </if>
         </trim>
     </update>
+
+    <update id="deletive" parameterType="JsonData">
+        UPDATE litemall_cart
+        SET `deleted` = 1
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.cartId != null">
+                and id = #{map.cartId,jdbcType=INTEGER}
+            </if>
+            <if test="map.userId != null">
+                and user_id = #{map.userId,jdbcType=VARCHAR}
+            </if>
+            <if test="map.productId != null">
+                and product_id = #{map.productId,jdbcType=VARCHAR}
+            </if>
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=VARCHAR}
+            </if>
+            <if test="map.checked != null">
+                and `checked` = #{map.checked,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </update>
+
+    <insert id="insert" parameterType="com.example.common.entity.Cart">
+        insert into litemall_cart
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="goodsSn != null">
+                goods_sn,
+            </if>
+            <if test="goodsName != null">
+                goods_name,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="number != null">
+                `number`,
+            </if>
+            <if test="specifications != null">
+                specifications,
+            </if>
+            <if test="checked != null">
+                `checked`,
+            </if>
+            <if test="picUrl != null">
+                pic_url,
+            </if>
+            <if test="addTime != null">
+                add_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=INTEGER},
+            </if>
+            <if test="goodsSn != null">
+                #{goodsSn,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsName != null">
+                #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=INTEGER},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="number != null">
+                #{number,jdbcType=SMALLINT},
+            </if>
+            <if test="specifications != null">
+                #{specifications,jdbcType=VARCHAR,typeHandler=com.example.common.mybatis.JsonStringArrayTypeHandler},
+            </if>
+            <if test="checked != null">
+                #{checked,jdbcType=BIT},
+            </if>
+            <if test="picUrl != null">
+                #{picUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="addTime != null">
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
 </mapper>

@@ -157,43 +157,76 @@
     </insert>
 
     <update id="updative" parameterType="JsonData">
-        update litemall_user
+        update litemall_order
         <set>
-            <if test="map.username != null">
-                username = #{map.username,jdbcType=VARCHAR},
+            <if test="map.id != null">
+                id = #{map.id,jdbcType=INTEGER},
             </if>
-            <if test="map.password != null">
-                `password` = #{map.password,jdbcType=VARCHAR},
+            <if test="map.userId != null">
+                user_id = #{map.userId,jdbcType=INTEGER},
             </if>
-            <if test="map.gender != null">
-                gender = #{map.gender,jdbcType=TINYINT},
+            <if test="map.orderSn != null">
+                order_sn = #{map.orderSn,jdbcType=VARCHAR},
             </if>
-            <if test="map.birthday != null">
-                birthday = #{map.birthday,jdbcType=DATE},
+            <if test="map.orderStatus != null">
+                order_status = #{map.orderStatus,jdbcType=SMALLINT},
             </if>
-            <if test="map.lastLoginTime != null">
-                last_login_time = #{map.lastLoginTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="map.lastLoginIp != null">
-                last_login_ip = #{map.lastLoginIp,jdbcType=VARCHAR},
-            </if>
-            <if test="map.userLevel != null">
-                user_level = #{map.userLevel,jdbcType=TINYINT},
-            </if>
-            <if test="map.nickname != null">
-                nickname = #{map.nickname,jdbcType=VARCHAR},
+            <if test="map.consignee != null">
+                consignee = #{map.consignee,jdbcType=VARCHAR},
             </if>
             <if test="map.mobile != null">
                 mobile = #{map.mobile,jdbcType=VARCHAR},
             </if>
-            <if test="map.avatar != null">
-                avatar = #{map.avatar,jdbcType=VARCHAR},
+            <if test="map.address != null">
+                address = #{map.address,jdbcType=VARCHAR},
             </if>
-            <if test="map.weixinOpenid != null">
-                weixin_openid = #{map.weixinOpenid,jdbcType=VARCHAR},
+            <if test="map.message != null">
+                message = #{map.message,jdbcType=VARCHAR},
             </if>
-            <if test="map.status != null">
-                `status` = #{map.status,jdbcType=TINYINT},
+            <if test="map.goodsPrice != null">
+                goods_price = #{map.goodsPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="map.freightPrice != null">
+                freight_price = #{map.freightPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="map.couponPrice != null">
+                coupon_price = #{map.couponPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="map.integralPrice != null">
+                integral_price = #{map.integralPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="map.grouponPrice != null">
+                groupon_price = #{map.grouponPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="map.orderPrice != null">
+                order_price = #{map.orderPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="map.actualPrice != null">
+                actual_price = #{map.actualPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="map.payId != null">
+                pay_id = #{map.payId,jdbcType=VARCHAR},
+            </if>
+            <if test="map.payTime != null">
+                pay_time = #{map.payTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.shipSn != null">
+                ship_sn = #{map.shipSn,jdbcType=VARCHAR},
+            </if>
+            <if test="map.shipChannel != null">
+                ship_channel = #{map.shipChannel,jdbcType=VARCHAR},
+            </if>
+            <if test="map.shipTime != null">
+                ship_time = #{map.shipTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.confirmTime != null">
+                confirm_time = #{map.confirmTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.comments != null">
+                comments = #{map.comments,jdbcType=SMALLINT},
+            </if>
+            <if test="map.endTime != null">
+                end_time = #{map.endTime,jdbcType=TIMESTAMP},
             </if>
             <if test="map.addTime != null">
                 add_time = #{map.addTime,jdbcType=TIMESTAMP},
@@ -206,12 +239,170 @@
             </if>
         </set>
         <trim prefix="where" prefixOverrides="and">
-            <if test="map.userId != null">
-                and id = #{map.userId,jdbcType=INTEGER}
+            <if test="map.orderId != null">
+                and id = #{map.orderId,jdbcType=INTEGER}
             </if>
             <if test="map.weixinOpenid != null">
                 and weixin_openid = #{map.weixinOpenid,jdbcType=VARCHAR}
             </if>
         </trim>
     </update>
+
+    <insert id="insert" parameterType="com.example.common.entity.Order" useGeneratedKeys="true" keyProperty="id">
+        insert into litemall_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="orderSn != null">
+                order_sn,
+            </if>
+            <if test="orderStatus != null">
+                order_status,
+            </if>
+            <if test="consignee != null">
+                consignee,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="message != null">
+                message,
+            </if>
+            <if test="goodsPrice != null">
+                goods_price,
+            </if>
+            <if test="freightPrice != null">
+                freight_price,
+            </if>
+            <if test="couponPrice != null">
+                coupon_price,
+            </if>
+            <if test="integralPrice != null">
+                integral_price,
+            </if>
+            <if test="grouponPrice != null">
+                groupon_price,
+            </if>
+            <if test="orderPrice != null">
+                order_price,
+            </if>
+            <if test="actualPrice != null">
+                actual_price,
+            </if>
+            <if test="payId != null">
+                pay_id,
+            </if>
+            <if test="payTime != null">
+                pay_time,
+            </if>
+            <if test="shipSn != null">
+                ship_sn,
+            </if>
+            <if test="shipChannel != null">
+                ship_channel,
+            </if>
+            <if test="shipTime != null">
+                ship_time,
+            </if>
+            <if test="confirmTime != null">
+                confirm_time,
+            </if>
+            <if test="comments != null">
+                comments,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="addTime != null">
+                add_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="orderSn != null">
+                #{orderSn,jdbcType=VARCHAR},
+            </if>
+            <if test="orderStatus != null">
+                #{orderStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="consignee != null">
+                #{consignee,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="message != null">
+                #{message,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsPrice != null">
+                #{goodsPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="freightPrice != null">
+                #{freightPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="couponPrice != null">
+                #{couponPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="integralPrice != null">
+                #{integralPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="grouponPrice != null">
+                #{grouponPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="orderPrice != null">
+                #{orderPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="actualPrice != null">
+                #{actualPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="payId != null">
+                #{payId,jdbcType=VARCHAR},
+            </if>
+            <if test="payTime != null">
+                #{payTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="shipSn != null">
+                #{shipSn,jdbcType=VARCHAR},
+            </if>
+            <if test="shipChannel != null">
+                #{shipChannel,jdbcType=VARCHAR},
+            </if>
+            <if test="shipTime != null">
+                #{shipTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="confirmTime != null">
+                #{confirmTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="comments != null">
+                #{comments,jdbcType=SMALLINT},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addTime != null">
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
 </mapper>

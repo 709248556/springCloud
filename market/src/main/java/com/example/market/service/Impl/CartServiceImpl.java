@@ -27,4 +27,14 @@ public class CartServiceImpl implements CartService {
     public int updative(JsonData jsonData) {
         return cartMapper.updative(jsonData);
     }
+
+    @Override
+    public int deletive(JsonData jsonData) {
+        return cartMapper.deletive(jsonData);
+    }
+
+    @Override
+    public int insert(Cart cart) {
+        return cartMapper.insert(cart);
+    }
 }

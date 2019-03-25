@@ -19,4 +19,9 @@ public class OrderGoodsServiceImpl implements OrderGoodsService {
     public List<OrderGoods> selective(JsonData jsonData) {
         return orderGoodsMapper.selective(jsonData);
     }
+
+    @Override
+    public int insert(OrderGoods orderGoods) {
+        return orderGoodsMapper.insert(orderGoods);
+    }
 }

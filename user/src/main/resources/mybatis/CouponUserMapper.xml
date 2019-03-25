@@ -35,9 +35,6 @@
             <if test="map.status != null">
                 and `status` = #{map.status,jdbcType=INTEGER}
             </if>
-            <if test="map.deleted != null">
-                and `deleted` = #{map.deleted,jdbcType=INTEGER}
-            </if>
         </trim>
         <if test="map.sort != null and map.sort !='' and map.order != null and map.order != ''">
             order by ${map.sort} ${map.order}
@@ -112,4 +109,57 @@
             </if>
         </trim>
     </insert>
+
+    <update id="updative" parameterType="JsonData">
+        update litemall_coupon_user
+        <set>
+            <if test="map.userId != null">
+                user_id = #{map.userId,jdbcType=INTEGER},
+            </if>
+            <if test="map.couponId != null">
+                coupon_id = #{map.couponId,jdbcType=INTEGER},
+            </if>
+            <if test="map.updateStatus != null">
+                `status` = #{map.updateStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="map.usedTime != null">
+                used_time = #{map.usedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.startTime != null">
+                start_time = #{map.startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.endTime != null">
+                end_time = #{map.endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.orderId != null">
+                order_id = #{map.orderId,jdbcType=INTEGER},
+            </if>
+            <if test="map.addTime != null">
+                add_time = #{map.addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.updateTime != null">
+                update_time = #{map.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="map.deleted != null">
+                deleted = #{map.deleted,jdbcType=BIT},
+            </if>
+        </set>
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.id != null">
+                and id = #{map.id,jdbcType=INTEGER}
+            </if>
+            <if test="map.userId != null">
+                and user_id = #{map.userId,jdbcType=VARCHAR}
+            </if>
+            <if test="map.couponId != null">
+                and coupon_id = #{map.couponId,jdbcType=VARCHAR}
+            </if>
+            <if test="map.status != null">
+                and `status` = #{map.status,jdbcType=VARCHAR}
+            </if>
+            <if test="map.deleted != null">
+                and `deleted` = #{map.deleted,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </update>
 </mapper>

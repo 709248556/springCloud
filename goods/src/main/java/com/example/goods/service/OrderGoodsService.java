@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface OrderGoodsService {
     List<OrderGoods> selective(JsonData jsonData);
+    int insert(OrderGoods orderGoods);
+
 }

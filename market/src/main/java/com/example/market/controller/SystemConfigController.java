@@ -44,6 +44,13 @@ public class SystemConfigController {
         return new RestResponse(model);
     }
 
-
+    @GetMapping("/getFreightLimit")
+    public RestResponse getSystemConfig(){
+        return new RestResponse(SystemConfig.getFreightLimit());
+    }
+    @GetMapping("/getFreight")
+    public RestResponse getFreight(){
+        return new RestResponse(SystemConfig.getFreight());
+    }
 
 }
