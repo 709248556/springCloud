@@ -64,4 +64,9 @@ public interface UserClient {
     @PostMapping("/getPermissionsList")
     RestResponse<Set<String>> getPermissionsList(@RequestParam("roleIds") Integer[] roleIds);
 
+    @GetMapping("/getUserAll")
+    RestResponse<List<User>> getUserAll(@RequestParam("deleted") int deleted);
+
+    @GetMapping("/getOrderAll")
+    RestResponse<List<Order>> getOrderAll(@RequestParam("deleted") int deleted);
 }

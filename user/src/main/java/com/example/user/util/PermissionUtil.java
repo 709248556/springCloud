@@ -1,6 +1,6 @@
 package com.example.user.util;
 
-import com.example.user.annotation.RequiresPermissionsDesc;
+import com.example.common.annotation.RequiresPermissionsDesc;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;

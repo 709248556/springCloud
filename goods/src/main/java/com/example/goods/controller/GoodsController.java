@@ -303,4 +303,9 @@ public class GoodsController {
         Goods goods = goodsService.selective(jsonData).get(0);
         return new RestResponse(goods);
     }
+
+    @GetMapping("/getGoodsAll")
+    public RestResponse<List<Goods>> getGoodsAll(JsonData jsonData){
+        return new RestResponse<>(goodsService.selective(jsonData));
+    }
 }

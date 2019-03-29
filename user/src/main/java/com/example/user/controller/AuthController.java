@@ -248,4 +248,38 @@ public class AuthController {
         result.put("userInfo", userInfo);
         return new RestResponse<>(result);
     }
+
+    @RequiresAuthentication
+    @PostMapping("profile/password")
+    public RestResponse password(@RequestBody String body){
+        RestResponse restResponse = new RestResponse();
+        JsonData jsonData = new JsonData();
+        String oldPassword = JacksonUtil.parseString(body, "oldPassword");
+        String newPassword = JacksonUtil.parseString(body, "newPassword");
+        if (StringUtils.isEmpty(oldPassword)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        if (StringUtils.isEmpty(newPassword)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        Subject currentUser = SecurityUtils.getSubject();
+        Admin admin = (Admin) currentUser.getPrincipal();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (!encoder.matches(oldPassword, admin.getPassword())) {
+            return restResponse.error(AuthEnum.AUTH_INVALID_ACCOUNT);
+        }
+        //密码加密
+        String encodedNewPassword = encoder.encode(newPassword);
+        jsonData.put("password",encodedNewPassword);
+        jsonData.put("userId",admin.getId());
+        if(userService.updative(jsonData) ==  0) return restResponse.error(RestEnum.UNKONWERROR);
+        return restResponse;
+    }
+    @RequiresAuthentication
+    @PostMapping("/logout")
+    public RestResponse login() {
+        Subject currentUser = SecurityUtils.getSubject();
+        currentUser.logout();
+        return new RestResponse();
+    }
 }

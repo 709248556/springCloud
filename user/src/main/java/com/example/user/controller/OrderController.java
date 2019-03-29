@@ -1,6 +1,7 @@
 package com.example.user.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.example.common.annotation.RequiresPermissionsDesc;
 import com.example.common.constants.CouponUserConstant;
 import com.example.common.constants.OrderConstant;
 import com.example.common.constants.TokenConstant;
@@ -18,7 +19,9 @@ import com.example.user.service.AddressService;
 import com.example.user.service.CouponUserService;
 import com.example.user.service.OrderService;
 import com.example.user.service.RegionService;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -583,12 +586,47 @@ public class OrderController {
     /**
      * 取消订单
      *
-     * @param userId 用户ID
-     * @param body   订单信息，{ orderId：xxx }
+     * @param //userId 用户ID
+     * @param //body   订单信息，{ orderId：xxx }
      * @return 取消订单操作结果
      */
 //    @PostMapping("cancel")
 //    public Object cancel(@LoginUser Integer userId, @RequestBody String body) {
 //        return wxOrderService.cancel(userId, body);
 //    }
+
+    @GetMapping("/getOrderAll")
+    public RestResponse<List<Order>> getOrderAll(JsonData jsonData) {
+        return new RestResponse<>(orderService.selective(jsonData));
+    }
+
+    /**
+     * 查询订单
+     *
+     * @param userId
+     * @param orderSn
+     * @param orderStatusArray
+     * @param page
+     * @param limit
+     * @param sort
+     * @param order
+     * @return
+     */
+    @RequiresPermissions("admin:order:list")
+    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "查询")
+    @GetMapping("order/list")
+    public RestResponse list(JsonData jsonData,Integer userId, String orderSn,
+                       @RequestParam(required = false) List<Short> orderStatusArray,
+                       @RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer limit,
+                       @Sort @RequestParam(defaultValue = "add_time") String sort,
+                       @Order @RequestParam(defaultValue = "desc") String order) {
+
+        long total = PageInfo.of(orderList).getTotal();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("total", total);
+        data.put("items", orderList);
+        return adminOrderService.list(userId, orderSn, orderStatusArray, page, limit, sort, order);
+    }
 }

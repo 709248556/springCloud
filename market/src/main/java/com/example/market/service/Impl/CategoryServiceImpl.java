@@ -20,6 +20,11 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> selective(JsonData jsonData) {
         if (jsonData.containsKey("categoryPage") && jsonData.containsKey("categorySize"))
             PageHelper.startPage(Integer.valueOf(jsonData.get("categoryPage").toString()), Integer.valueOf(jsonData.get("categorySize").toString()));
+        if (jsonData.containsKey("page") && jsonData.containsKey("limit"))
+            PageHelper.startPage(Integer.valueOf(jsonData.get("page").toString()), Integer.valueOf(jsonData.get("limit").toString()));
+        if(jsonData.containsKey("name")){
+            jsonData.put("name","%"+jsonData.get("name")+"%");
+        }
         return categoryMapper.selective(jsonData);
     }
 }

@@ -83,5 +83,15 @@ public class UserFallback implements UserClient {
         return null;
     }
 
+    @Override
+    public RestResponse<List<User>> getUserAll(int deleted) {
+        return null;
+    }
+
+    @Override
+    public RestResponse<List<Order>> getOrderAll(int deleted) {
+        return null;
+    }
+
 
 }

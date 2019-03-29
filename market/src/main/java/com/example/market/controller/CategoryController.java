@@ -1,16 +1,17 @@
 package com.example.market.controller;
 
+import com.example.common.annotation.RequiresPermissionsDesc;
 import com.example.common.entity.Category;
 import com.example.common.response.RestResponse;
 import com.example.common.util.JsonData;
 import com.example.market.service.CategoryService;
+import com.github.pagehelper.PageInfo;
 import com.rabbitmq.client.AMQP;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.annotation.Order;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -131,5 +132,35 @@ public class CategoryController {
         data.put("currentCategory", currentCategory);
         data.put("currentSubCategory", currentSubCategory);
         return new RestResponse(data);
+    }
+
+    @RequiresPermissions("admin:category:list")
+    @RequiresPermissionsDesc(menu={"商场管理" , "类目管理"}, button="查询")
+    @GetMapping("category/list")
+    public RestResponse list(JsonData jsonData) {
+        List<Category> collectList = categoryService.selective(jsonData);
+        long total = PageInfo.of(collectList).getTotal();
+        Map<String, Object> data = new HashMap<>();
+        data.put("total", total);
+        data.put("items", collectList);
+        return new RestResponse(data);
+    }
+
+    @RequiresPermissions("admin:category:list")
+    @GetMapping("category/l1")
+    public Object catL1() {
+        JsonData jsonData = new JsonData();
+        // 所有一级分类目录
+        jsonData.put("categoryLevel","L1");
+        jsonData.put("deleted",0);
+        List<Category> l1CatList = categoryService.selective(jsonData);
+        List<Map<String, Object>> data = new ArrayList<>(l1CatList.size());
+        for (Category category : l1CatList) {
+            Map<String, Object> d = new HashMap<>(2);
+            d.put("value", category.getId());
+            d.put("label", category.getName());
+            data.add(d);
+        }
+        return new RestResponse<>(data);
     }
 }

@@ -64,5 +64,15 @@ public class GoodsFallback implements GoodsClient{
         return null;
     }
 
+    @Override
+    public RestResponse<List<Goods>> getGoodsAll(int deleted) {
+        return null;
+    }
+
+    @Override
+    public RestResponse<List<GoodsProduct>> getGoodsProductAll(int deleted) {
+        return null;
+    }
+
 
 }

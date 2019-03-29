@@ -7,6 +7,7 @@ import com.example.common.entity.OrderGoods;
 import com.example.common.hystrix.GoodsFallback;
 import com.example.common.hystrix.MarketFallback;
 import com.example.common.response.RestResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,4 +56,10 @@ public interface GoodsClient {
 
     @PostMapping("/reduceStock")
     RestResponse<Integer> reduceStock(@RequestParam("productId") int productId,@RequestParam("number") int number);
+
+    @GetMapping("/getGoodsAll")
+    RestResponse<List<Goods>> getGoodsAll(@RequestParam("deleted") int deleted);
+
+    @GetMapping("/getGoodsProductAll")
+    RestResponse<List<GoodsProduct>> getGoodsProductAll(@RequestParam("deleted") int deleted);
 }
