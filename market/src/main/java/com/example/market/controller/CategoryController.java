@@ -1,16 +1,21 @@
 package com.example.market.controller;
 
 import com.example.common.annotation.RequiresPermissionsDesc;
+import com.example.common.entity.Brand;
+import com.example.common.entity.CatVo;
 import com.example.common.entity.Category;
+import com.example.common.entity.Goods;
+import com.example.common.enums.RestEnum;
+import com.example.common.feign.GoodsClient;
 import com.example.common.response.RestResponse;
 import com.example.common.util.JsonData;
 import com.example.market.service.CategoryService;
 import com.github.pagehelper.PageInfo;
 import com.rabbitmq.client.AMQP;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -25,6 +30,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private GoodsClient goodsClient;
 
     /**
      * 商品分类类目
@@ -134,8 +142,6 @@ public class CategoryController {
         return new RestResponse(data);
     }
 
-    @RequiresPermissions("admin:category:list")
-    @RequiresPermissionsDesc(menu={"商场管理" , "类目管理"}, button="查询")
     @GetMapping("category/list")
     public RestResponse list(JsonData jsonData) {
         List<Category> collectList = categoryService.selective(jsonData);
@@ -146,7 +152,6 @@ public class CategoryController {
         return new RestResponse(data);
     }
 
-    @RequiresPermissions("admin:category:list")
     @GetMapping("category/l1")
     public Object catL1() {
         JsonData jsonData = new JsonData();
@@ -162,5 +167,126 @@ public class CategoryController {
             data.add(d);
         }
         return new RestResponse<>(data);
+    }
+
+    @GetMapping("/getCategoryAndBrand")
+    public RestResponse getCategoryAndBrand() {
+        JsonData jsonData = new JsonData();
+        // 管理员设置“所属分类”
+        jsonData.put("categoryLevel","L1");
+        jsonData.put("deleted",0);
+        List<Category> l1CatList = categoryService.selective(jsonData);
+        List<CatVo> categoryList = new ArrayList<>(l1CatList.size());
+        JsonData jsonData1 = new JsonData();
+        for (Category l1 : l1CatList) {
+            CatVo l1CatVo = new CatVo();
+            l1CatVo.setValue(l1.getId());
+            l1CatVo.setLabel(l1.getName());
+            jsonData1.put("pid",l1.getId());
+            jsonData1.put("deleted",0);
+            List<Category> l2CatList = categoryService.selective(jsonData1);
+            List<CatVo> children = new ArrayList<>(l2CatList.size());
+            for (Category l2 : l2CatList) {
+                CatVo l2CatVo = new CatVo();
+                l2CatVo.setValue(l2.getId());
+                l2CatVo.setLabel(l2.getName());
+                children.add(l2CatVo);
+            }
+            l1CatVo.setChildren(children);
+
+            categoryList.add(l1CatVo);
+        }
+
+        // http://element-cn.eleme.io/#/zh-CN/component/select
+        // 管理员设置“所属品牌商”
+        List<Brand> list = null;
+        try {
+            RestResponse<List<Brand>> brandRestResponse = goodsClient.getBrandAll(0);
+            if (brandRestResponse.getErrno() != RestEnum.OK.code) {
+                log.error("CategoryController.getCategoryAndBrand方法错误 brandRestResponse.getErrno() != RestEnum.OK.code，Errno为:" + brandRestResponse.getErrno() + "错误信息为:" + brandRestResponse.getErrmsg());
+                //TODO 抛出异常
+            }
+            list = brandRestResponse.getData();
+        }catch (Exception e){
+            log.error("CategoryController.getCategoryAndBrand ERROR ,", e.getMessage());
+        }
+        List<Map<String, Object>> brandList = new ArrayList<>(l1CatList.size());
+        for (Brand brand : list) {
+            Map<String, Object> b = new HashMap<>(2);
+            b.put("value", brand.getId());
+            b.put("label", brand.getName());
+            brandList.add(b);
+        }
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("categoryList", categoryList);
+        data.put("brandList", brandList);
+        return new RestResponse<>(data);
+    }
+
+    @PostMapping("category/create")
+    public RestResponse create(@RequestBody Category category) {
+        RestResponse restResponse = new RestResponse();
+        restResponse = validate(category);
+        if (restResponse != null) {
+            return restResponse;
+        }
+        categoryService.insert(category);
+        return restResponse.success(category);
+    }
+    private RestResponse validate(Category category) {
+        RestResponse restResponse = new RestResponse();
+        String name = category.getName();
+        if (StringUtils.isEmpty(name)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+
+        String level = category.getLevel();
+        if (StringUtils.isEmpty(level)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        if (!level.equals("L1") && !level.equals("L2")) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+
+        Integer pid = category.getPid();
+        if (level.equals("L2") && (pid == null)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+
+        return null;
+    }
+    @GetMapping("category/read")
+    public RestResponse read(JsonData jsonData) {
+        Category category = categoryService.selective(jsonData).get(0);
+        return new RestResponse<>(category);
+    }
+    @PostMapping("category/update")
+    public Object update(@RequestBody Category category) {
+        RestResponse restResponse = new RestResponse();
+        restResponse = validate(category);
+        if (restResponse != null) {
+            return restResponse;
+        }
+
+        if (categoryService.updateById(category) == 0) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        return restResponse;
+    }
+    @PostMapping("category/delete")
+    public RestResponse delete(@RequestBody Category category) {
+        RestResponse restResponse = new RestResponse();
+        Integer id = category.getId();
+        if (id == null) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        categoryService.deleteById(id);
+        return restResponse;
+    }
+
+    @GetMapping("getCategoryById")
+    RestResponse<Category> getCategoryById(JsonData jsonData){
+        return new RestResponse<>(categoryService.selective(jsonData).get(0));
     }
 }

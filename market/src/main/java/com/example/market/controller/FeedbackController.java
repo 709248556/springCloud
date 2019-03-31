@@ -10,16 +10,17 @@ import com.example.common.util.JsonData;
 import com.example.common.util.RedisUtil;
 import com.example.common.util.RegexUtil;
 import com.example.market.service.FeedbackService;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -105,5 +106,15 @@ public class FeedbackController {
             return restResponse.error(RestEnum.BADARGUMENT);
         }
         return null;
+    }
+
+    @GetMapping("feedback/list")
+    public Object list(JsonData jsonData) {
+        List<Feedback> feedbackList = feedbackService.selective(jsonData);
+        long total = PageInfo.of(feedbackList).getTotal();
+        Map<String, Object> data = new HashMap<>();
+        data.put("total", total);
+        data.put("items", feedbackList);
+        return new RestResponse<>(data);
     }
 }

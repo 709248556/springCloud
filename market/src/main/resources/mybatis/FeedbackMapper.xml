@@ -4,7 +4,7 @@
     <sql id="Base_Column_List">
        id, user_id, username, mobile, feed_type, content, `status`, has_picture, pic_urls,add_time, update_time, deleted
     </sql>
-    <resultMap id="cart" type="com.example.common.entity.Feedback">
+    <resultMap id="feedback" type="com.example.common.entity.Feedback">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="user_id" jdbcType="INTEGER" property="userId" />
         <result column="username" jdbcType="VARCHAR" property="username" />
@@ -166,4 +166,24 @@
             </if>
         </trim>
     </insert>
+
+    <select id="selective" resultMap="feedback" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_feedback
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.id != null and map.id !=''">
+                and id = #{map.id,jdbcType=VARCHAR}
+            </if>
+            <if test="map.userId != null and map.userId !=''">
+                and user_id = #{map.userId,jdbcType=VARCHAR}
+            </if>
+            <if test="map.username != null and map.username !=''">
+                and username like #{map.username,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        <if test="map.sort != null and map.sort !='' and map.order != null and map.order != ''">
+            order by ${map.sort} ${map.order}
+        </if>
+    </select>
 </mapper>

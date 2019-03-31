@@ -15,16 +15,16 @@ import com.example.common.util.JacksonUtil;
 import com.example.common.util.JsonData;
 import com.example.common.util.OrderUtil;
 import com.example.common.util.RedisUtil;
-import com.example.user.service.AddressService;
-import com.example.user.service.CouponUserService;
-import com.example.user.service.OrderService;
-import com.example.user.service.RegionService;
+import com.example.user.service.*;
 import com.github.pagehelper.PageInfo;
+import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import sun.net.TelnetInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -61,6 +61,12 @@ public class OrderController {
 
     @Autowired
     private CouponUserService couponUserService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CommentService commentService;
 
 
     /**
@@ -594,7 +600,6 @@ public class OrderController {
 //    public Object cancel(@LoginUser Integer userId, @RequestBody String body) {
 //        return wxOrderService.cancel(userId, body);
 //    }
-
     @GetMapping("/getOrderAll")
     public RestResponse<List<Order>> getOrderAll(JsonData jsonData) {
         return new RestResponse<>(orderService.selective(jsonData));
@@ -615,18 +620,139 @@ public class OrderController {
     @RequiresPermissions("admin:order:list")
     @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "查询")
     @GetMapping("order/list")
-    public RestResponse list(JsonData jsonData,Integer userId, String orderSn,
-                       @RequestParam(required = false) List<Short> orderStatusArray,
-                       @RequestParam(defaultValue = "1") Integer page,
-                       @RequestParam(defaultValue = "10") Integer limit,
-                       @Sort @RequestParam(defaultValue = "add_time") String sort,
-                       @Order @RequestParam(defaultValue = "desc") String order) {
-
+    public RestResponse list(@RequestParam(required = false) List<Short> orderStatusArray, HttpServletRequest request) {
+        JsonData jsonData = new JsonData(request);
+        jsonData.put("orderStatusArray", orderStatusArray);
+        List<Order> orderList = orderService.selective(jsonData);
         long total = PageInfo.of(orderList).getTotal();
-
         Map<String, Object> data = new HashMap<>();
         data.put("total", total);
         data.put("items", orderList);
-        return adminOrderService.list(userId, orderSn, orderStatusArray, page, limit, sort, order);
+        return new RestResponse(data);
+    }
+
+    /**
+     * 订单详情
+     *
+     * @param id
+     * @return
+     */
+    @RequiresPermissions("admin:order:read")
+    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "详情")
+    @GetMapping("order/detail")
+    public RestResponse orderDetail(JsonData jsonData) {
+        Order order = orderService.selective(jsonData).get(0);
+        List<OrderGoods> orderGoods = null;
+
+        try {
+            RestResponse<List<OrderGoods>> restResponse1 = goodsClient.getOrderGoodsByOrderId(Integer.valueOf(jsonData.get("id").toString()), 0);
+            if (restResponse1.getErrno() != RestEnum.OK.code) {
+                log.error("OrderController.detail方法错误 restResponse1.getErrno() != RestEnum.OK.code，Errno为:" + restResponse1.getErrno() + "错误信息为:" + restResponse1.getErrmsg());
+                //TODO 抛出异常
+            }
+            orderGoods = restResponse1.getData();
+        } catch (Exception e) {
+            log.error("OrderController.submit方法错误", e.getMessage());
+        }
+
+
+        JsonData jsonData1 = new JsonData();
+        jsonData1.put("userId",order.getUserId());
+        User user = userService.selective(jsonData1).get(0);
+        UserVo userVo = new UserVo();
+        userVo.setNickname(user.getNickname());
+        userVo.setAvatar(user.getAvatar());
+
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("order", order);
+        data.put("orderGoods", orderGoods);
+        data.put("user", user);
+
+        return new RestResponse(data);
+    }
+
+    /**
+     * 订单退款
+     *
+     * @param body 订单信息，{ orderId：xxx }
+     * @return 订单退款操作结果
+     */
+    @RequiresPermissions("admin:order:refund")
+    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "订单退款")
+    @PostMapping("order/refund")
+    public RestResponse refund(@RequestBody String body) {
+        RestResponse restResponse = new RestResponse();
+        Integer orderId = JacksonUtil.parseInteger(body, "orderId");
+        String refundMoney = JacksonUtil.parseString(body, "refundMoney");
+        if (orderId == null) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        if (StringUtils.isEmpty(refundMoney)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        return orderService.refund(orderId,refundMoney);
+    }
+
+    /**
+     * 发货
+     *
+     * @param body 订单信息，{ orderId：xxx, shipSn: xxx, shipChannel: xxx }
+     * @return 订单操作结果
+     */
+    @RequiresPermissions("admin:order:ship")
+    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "订单发货")
+    @PostMapping("order/ship")
+    public RestResponse ship(@RequestBody String body) {
+        RestResponse restResponse = new RestResponse();
+        Integer orderId = JacksonUtil.parseInteger(body, "orderId");
+        String shipSn = JacksonUtil.parseString(body, "shipSn");
+        String shipChannel = JacksonUtil.parseString(body, "shipChannel");
+        if (orderId == null || shipSn == null || shipChannel == null) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        return orderService.ship(orderId,shipSn,shipChannel);
+    }
+
+
+    /**
+     * 回复订单商品
+     *
+     * @param body 订单信息，{ orderId：xxx }
+     * @return 订单操作结果
+     */
+    @RequiresPermissions("admin:order:reply")
+    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "订单商品回复")
+    @PostMapping("order/reply")
+    public Object reply(@RequestBody String body) {
+        RestResponse restResponse = new RestResponse();
+        Integer commentId = JacksonUtil.parseInteger(body, "commentId");
+        if (commentId == null || commentId == 0) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        // 目前只支持回复一次
+        JsonData jsonData = new JsonData();
+        jsonData.put("id",commentId);
+        if (commentService.selective(jsonData).size() != 0) {
+            return restResponse.error(OrderEnum.ORDER_REPLY_EXIST);
+        }
+        String content = JacksonUtil.parseString(body, "content");
+        if (StringUtils.isEmpty(content)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+
+        // 创建评价回复
+        Comment comment = new Comment();
+        comment.setType((byte) 2);
+        comment.setValueId(commentId);
+        comment.setContent(content);
+        comment.setUserId(0);                 //
+        comment.setStar((short) 0);           //
+        comment.setHasPicture(false);        //
+        comment.setPicUrls(new String[]{});  //
+        comment.setAddTime(LocalDateTime.now());
+        comment.setUpdateTime(LocalDateTime.now());
+        if(commentService.insert(comment) == 0) return restResponse.error(RestEnum.SERIOUS);
+        return restResponse;
     }
 }

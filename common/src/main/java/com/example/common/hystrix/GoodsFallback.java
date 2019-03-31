@@ -74,5 +74,15 @@ public class GoodsFallback implements GoodsClient{
         return null;
     }
 
+    @Override
+    public RestResponse<List<Brand>> getBrandAll(int deleted) {
+        return null;
+    }
+
+    @Override
+    public RestResponse<Integer> addStock(int productId, int number) {
+        return null;
+    }
+
 
 }

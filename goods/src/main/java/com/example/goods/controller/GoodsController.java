@@ -3,6 +3,7 @@ package com.example.goods.controller;
 import com.example.common.constants.TokenConstant;
 import com.example.common.constants.TypeConstant;
 import com.example.common.entity.*;
+import com.example.common.enums.GoodsEnum;
 import com.example.common.enums.RestEnum;
 import com.example.common.feign.MarketClient;
 import com.example.common.feign.UserClient;
@@ -14,9 +15,11 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +52,7 @@ public class GoodsController {
 
     @Autowired
     private RedisUtil redisUtil;
+
 
     /**
      * 商品详情
@@ -144,7 +148,7 @@ public class GoodsController {
         if (jsonData.containsKey(TokenConstant.TOKEN)) {
             int userId = redisUtil.getUserId(jsonData.get(TokenConstant.TOKEN).toString());
             try {
-                RestResponse<Integer> restResponse = userClient.getCollectCountNum(Integer.valueOf(jsonData.get("id").toString()),userId, TypeConstant.GOODS_TYPE);
+                RestResponse<Integer> restResponse = userClient.getCollectCountNum(Integer.valueOf(jsonData.get("id").toString()), userId, TypeConstant.GOODS_TYPE);
                 if (restResponse.getErrno() != RestEnum.OK.code) {
                     log.error("GoodsController.detail方法错误 restResponse.getErrno() != RestEnum.OK.code，Errno为:" + restResponse.getErrno() + "错误信息为:" + restResponse.getErrmsg());
                     //TODO 抛出异常
@@ -215,7 +219,7 @@ public class GoodsController {
 //        }
 
         //查询列表数据
-        if (jsonData.containsKey("categoryId")&&Integer.valueOf(jsonData.get("categoryId").toString()) == 0) {
+        if (jsonData.containsKey("categoryId") && Integer.valueOf(jsonData.get("categoryId").toString()) == 0) {
             jsonData.remove("categoryId");
         }
 
@@ -270,7 +274,7 @@ public class GoodsController {
         jsonData.remove("goodsId");
         jsonData.put("page", 0);
         jsonData.put("size", 6);
-        jsonData.put("categoryId",goods.getCategoryId());
+        jsonData.put("categoryId", goods.getCategoryId());
         List<Goods> goodsList = goodsService.selective(jsonData);
         Map<String, Object> data = new HashMap<>();
         data.put("goodsList", goodsList);
@@ -278,13 +282,13 @@ public class GoodsController {
     }
 
     @PostMapping("/getGoodsListByCategoryIdList")
-    public RestResponse<List<Goods>> getGoodsListByCategoryIdList(JsonData jsonData,@RequestParam("categoryIdList") List<Integer> categoryIdList){
+    public RestResponse<List<Goods>> getGoodsListByCategoryIdList(JsonData jsonData, @RequestParam("categoryIdList") List<Integer> categoryIdList) {
         List<Goods> goodsList = new ArrayList<>();
-        for(int categoryId : categoryIdList ){
+        for (int categoryId : categoryIdList) {
             if (goodsList.size() == 4) continue;
-            jsonData.put("categoryId",categoryId);
+            jsonData.put("categoryId", categoryId);
             List<Goods> list = goodsService.selective(jsonData);
-            for (int i = 0;i < list.size();i++){
+            for (int i = 0; i < list.size(); i++) {
                 goodsList.add(list.get(i));
             }
 
@@ -293,19 +297,241 @@ public class GoodsController {
     }
 
     @GetMapping("/getGoodsList")
-    public RestResponse<List<Goods>> getGoodsList(JsonData jsonData){
+    public RestResponse<List<Goods>> getGoodsList(JsonData jsonData) {
         List<Goods> goodsList = goodsService.selective(jsonData);
         return new RestResponse(goodsList);
     }
 
     @GetMapping("/getGoodsById")
-    public RestResponse<List<Goods>> getGoodsById(JsonData jsonData){
+    public RestResponse<List<Goods>> getGoodsById(JsonData jsonData) {
         Goods goods = goodsService.selective(jsonData).get(0);
         return new RestResponse(goods);
     }
 
     @GetMapping("/getGoodsAll")
-    public RestResponse<List<Goods>> getGoodsAll(JsonData jsonData){
+    public RestResponse<List<Goods>> getGoodsAll(JsonData jsonData) {
         return new RestResponse<>(goodsService.selective(jsonData));
     }
+
+    /**
+     * 查询商品
+     *
+     * @param /goodsSn
+     * @param /name
+     * @param /page
+     * @param /limit
+     * @param /sort
+     * @param /order
+     * @return
+     */
+    @GetMapping("/goodslist")
+    public RestResponse Goodslist(JsonData jsonData) {
+        List<Goods> goodsList = goodsService.selective(jsonData);
+        long total = PageInfo.of(goodsList).getTotal();
+        Map<String, Object> data = new HashMap<>();
+        data.put("total", total);
+        data.put("items", goodsList);
+        return new RestResponse<>(data);
+    }
+
+    /**
+     * 编辑商品
+     *
+     * @param goodsAllinone
+     * @return
+     */
+    @PostMapping("/update")
+    public RestResponse update(@RequestBody GoodsAllinone goodsAllinone) {
+        RestResponse restResponse = validate(goodsAllinone);
+        if (restResponse != null) {
+            return restResponse;
+        }
+
+        Goods goods = goodsAllinone.getGoods();
+        GoodsAttribute[] attributes = goodsAllinone.getAttributes();
+        GoodsSpecification[] specifications = goodsAllinone.getSpecifications();
+        GoodsProduct[] products = goodsAllinone.getProducts();
+
+        Integer id = goods.getId();
+        // 检查是否存在购物车商品或者订单商品
+        // 如果存在则拒绝修改商品。
+//        if (orderGoodsService.checkExist(id)) {
+//            return ResponseUtil.fail(GOODS_UPDATE_NOT_ALLOWED, "商品已经在订单中，不能修改");
+//        }
+//        if (cartService.checkExist(id)) {
+//            return ResponseUtil.fail(GOODS_UPDATE_NOT_ALLOWED, "商品已经在购物车中，不能修改");
+//        }
+        return goodsService.update(goods,specifications,attributes,products);
+    }
+
+    /**
+     * 删除商品
+     *
+     * @param goods
+     * @return
+     */
+    @PostMapping("/delete")
+    public Object delete(@RequestBody Goods goods) {
+        Integer id = goods.getId();
+        if (id == null) {
+            return new RestResponse<>(RestEnum.BADARGUMENT);
+        }
+        return goodsService.delete(goods);
+    }
+
+    /**
+     * 添加商品
+     *
+     * @param goodsAllinone
+     * @return
+     */
+    @PostMapping("/create")
+    public RestResponse create(@RequestBody GoodsAllinone goodsAllinone) {
+        RestResponse restResponse = validate(goodsAllinone);
+        if (restResponse != null) {
+            return restResponse;
+        }
+
+        Goods goods = goodsAllinone.getGoods();
+        GoodsAttribute[] attributes = goodsAllinone.getAttributes();
+        GoodsSpecification[] specifications = goodsAllinone.getSpecifications();
+        GoodsProduct[] products = goodsAllinone.getProducts();
+
+        String name = goods.getName();
+        if (goodsService.checkExistByName(name)) {
+            return restResponse.error(GoodsEnum.GOODS_NAME_EXIST);
+        }
+        return goodsService.create(goods,attributes,specifications,products);
+    }
+
+    /**
+     * 商品详情
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/goodsDetail")
+    public RestResponse detail(@NotNull Integer id) {
+        JsonData jsonData = new JsonData();
+        jsonData.put("goodsId",id);
+        Goods goods = goodsService.selective(jsonData).get(0);
+        List<GoodsProduct> products = goodsProductService.queryByGid(id);
+        List<GoodsSpecification> specifications = goodsSpecificationService.queryByGid(id);
+        List<GoodsAttribute> attributes = goodsAttributeService.queryByGid(id);
+
+        Integer categoryId = goods.getCategoryId();
+        Category category = null;
+        try {
+            RestResponse<Category> restResponse = marketClient.getCategoryById(categoryId);
+            if (restResponse.getErrno() != RestEnum.OK.code) {
+                log.error("GoodsController.goodsDetail方法错误 restResponse.getErrno() != RestEnum.OK.code，Errno为:" + restResponse.getErrno() + "错误信息为:" + restResponse.getErrmsg());
+                //TODO 抛出异常
+            }
+            category = restResponse.getData();
+        }catch (Exception e){
+            log.error("GoodsController.goodsDetail ERROR", e.getMessage());
+        }
+
+        Integer[] categoryIds = new Integer[]{};
+        if (category != null) {
+            Integer parentCategoryId = category.getPid();
+            categoryIds = new Integer[]{parentCategoryId, categoryId};
+        }
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("goods", goods);
+        data.put("specifications", specifications);
+        data.put("products", products);
+        data.put("attributes", attributes);
+        data.put("categoryIds", categoryIds);
+
+        return new RestResponse(data);
+
+    }
+
+
+    private RestResponse validate(GoodsAllinone goodsAllinone) {
+        RestResponse restResponse = new RestResponse();
+        Goods goods = goodsAllinone.getGoods();
+        String name = goods.getName();
+        if (StringUtils.isEmpty(name)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        String goodsSn = goods.getGoodsSn();
+        if (StringUtils.isEmpty(goodsSn)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        // 品牌商可以不设置，如果设置则需要验证品牌商存在
+        Integer brandId = goods.getBrandId();
+        if (brandId != null && brandId != 0) {
+            JsonData jsonData = new JsonData();
+            jsonData.put("id", brandId);
+            if (brandService.selective(jsonData).size() == 0) {
+                return restResponse.error(RestEnum.BADARGUMENT);
+            }
+        }
+        // 分类可以不设置，如果设置则需要验证分类存在
+        Integer categoryId = goods.getCategoryId();
+        if (categoryId != null && categoryId != 0) {
+            Category category = null;
+            try {
+                RestResponse<Category> categoryRestResponse = marketClient.getCategoryById(categoryId);
+                if (categoryRestResponse.getErrno() != RestEnum.OK.code) {
+                    log.error("GoodsController.validate方法错误 categoryRestResponse.getErrno() != RestEnum.OK.code，Errno为:" + categoryRestResponse.getErrno() + "错误信息为:" + categoryRestResponse.getErrmsg());
+                    //TODO 抛出异常
+                }
+                category = categoryRestResponse.getData();
+            } catch (Exception e) {
+                log.error("GoodsController.validate ERROR", e.getMessage());
+            }
+            if (category == null) {
+                return restResponse.error(RestEnum.BADARGUMENT);
+            }
+        }
+
+        GoodsAttribute[] attributes = goodsAllinone.getAttributes();
+        for (GoodsAttribute attribute : attributes) {
+            String attr = attribute.getAttribute();
+            if (StringUtils.isEmpty(attr)) {
+                return restResponse.error(RestEnum.BADARGUMENT);
+            }
+            String value = attribute.getValue();
+            if (StringUtils.isEmpty(value)) {
+                return restResponse.error(RestEnum.BADARGUMENT);
+            }
+        }
+
+       GoodsSpecification[] specifications = goodsAllinone.getSpecifications();
+        for (GoodsSpecification specification : specifications) {
+            String spec = specification.getSpecification();
+            if (StringUtils.isEmpty(spec)) {
+                return restResponse.error(RestEnum.BADARGUMENT);
+            }
+            String value = specification.getValue();
+            if (StringUtils.isEmpty(value)) {
+                return restResponse.error(RestEnum.BADARGUMENT);
+            }
+        }
+
+        GoodsProduct[] products = goodsAllinone.getProducts();
+        for (GoodsProduct product : products) {
+            Integer number = product.getNumber();
+            if (number == null || number < 0) {
+                return restResponse.error(RestEnum.BADARGUMENT);
+            }
+
+            BigDecimal price = product.getPrice();
+            if (price == null) {
+                return restResponse.error(RestEnum.BADARGUMENT);
+            }
+
+            String[] productSpecifications = product.getSpecifications();
+            if (productSpecifications.length == 0) {
+                return restResponse.error(RestEnum.BADARGUMENT);
+            }
+        }
+
+        return null;
+    }
+
 }

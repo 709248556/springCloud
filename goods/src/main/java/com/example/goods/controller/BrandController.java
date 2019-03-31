@@ -8,15 +8,14 @@ import com.example.common.util.JsonData;
 import com.example.goods.service.BrandService;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,8 +78,6 @@ public class BrandController {
         return restResponse.success(data);
     }
 
-    @RequiresPermissions("admin:brand:list")
-    @RequiresPermissionsDesc(menu = {"商场管理", "品牌管理"}, button = "查询")
     @GetMapping("/brandList")
     public RestResponse brandList(JsonData jsonData) {
         jsonData.put("delted", 0);
@@ -90,5 +87,75 @@ public class BrandController {
         data.put("total", total);
         data.put("items", brandList);
         return new RestResponse(data);
+    }
+
+    @GetMapping("/getBrandAll")
+    public RestResponse getBrandAll(JsonData jsonData){
+        return new RestResponse(brandService.selective(jsonData));
+    }
+
+    @PostMapping("/brand/create")
+    public RestResponse create(@RequestBody Brand brand) {
+        RestResponse restResponse = new RestResponse();
+        if (StringUtils.isEmpty(brand)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        if (StringUtils.isEmpty(brand.getName())) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        if (StringUtils.isEmpty(brand.getDesc())) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        if (brand.getFloorPrice() == null) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        if (brandService.insert(brand) == 0) restResponse.error(RestEnum.SERIOUS);
+        return restResponse;
+    }
+    @GetMapping("brand/read")
+    public RestResponse read(JsonData jsonData) {
+        Brand brand = brandService.selective(jsonData).get(0);
+        return new RestResponse(brand);
+    }
+
+    @PostMapping("brand/update")
+    public Object update(@RequestBody Brand brand) {
+        RestResponse restResponse = validate(brand);
+        if (restResponse != null) {
+            return restResponse;
+        }
+        if (brandService.updateById(brand) == 0) {
+            return restResponse.error(RestEnum.UPDATEDDATAFAILED);
+        }
+        return restResponse.success(brand);
+    }
+
+    @PostMapping("brand/delete")
+    public Object delete(@RequestBody Brand brand) {
+        RestResponse restResponse = new RestResponse();
+        Integer id = brand.getId();
+        if (id == null) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        if(brandService.deleteById(id) == 0) return restResponse.error(RestEnum.UNKONWERROR);
+        return restResponse;
+    }
+    private RestResponse validate(Brand brand) {
+        RestResponse restResponse = new RestResponse();
+        String name = brand.getName();
+        if (StringUtils.isEmpty(name)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+
+        String desc = brand.getDesc();
+        if (StringUtils.isEmpty(desc)) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+
+        BigDecimal price = brand.getFloorPrice();
+        if (price == null) {
+            return restResponse.error(RestEnum.BADARGUMENT);
+        }
+        return null;
     }
 }

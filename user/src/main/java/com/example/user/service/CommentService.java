@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CommentService {
     List<Comment> selective(JsonData jsonData);
+    int insert(Comment comment);
+    int deleteById(int id);
 }

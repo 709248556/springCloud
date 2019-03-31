@@ -6,5 +6,8 @@ import com.example.common.util.JsonData;
 import java.util.List;
 
 public interface AdvertisementService {
-    public List<Advertisement> selective(JsonData jsonData);
+     List<Advertisement> selective(JsonData jsonData);
+     int updateById(Advertisement advertisement);
+     int deleteById(int id);
+     int insert(Advertisement advertisement);
 }

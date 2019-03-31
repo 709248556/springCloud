@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface BrandService {
     List<Brand> selective(JsonData jsonData);
+    int insert(Brand brand);
+    int updateById(Brand brand);
+    int deleteById(int id);
 }

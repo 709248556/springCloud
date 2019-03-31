@@ -8,5 +8,9 @@ import java.util.List;
 public interface GoodsMapper {
     int countByExample();
 
-    List<Goods>  selective(JsonData jsonData);
+    List<Goods> selective(JsonData jsonData);
+
+    int updateById(Goods goods);
+
+    int deleteById(int id);
 }

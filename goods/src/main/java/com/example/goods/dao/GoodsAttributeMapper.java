@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface GoodsAttributeMapper {
     List<GoodsAttribute>  selective(JsonData jsonData);
+    int deleteByGid(int id);
+    int insert(GoodsAttribute goodsAttribute);
 }

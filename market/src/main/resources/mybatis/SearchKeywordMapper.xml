@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.market.dao.SearchKeywordDao">
+    <sql id="Base_Column_List">
+        id, keyword, url, is_hot, is_default, sort_order, add_time, update_time, deleted
+    </sql>
+    <resultMap id="searchKeyword" type="com.example.common.entity.SearchKeyword">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="is_hot" jdbcType="BIT" property="isHot" />
+        <result column="is_default" jdbcType="BIT" property="isDefault" />
+        <result column="sort_order" jdbcType="INTEGER" property="sortOrder" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+
+    <select id="selective" resultMap="searchKeyword" parameterType="JsonData">
+        select
+        <include refid="Base_Column_List"/>
+        FROM litemall_keyword
+        <trim prefix="where" prefixOverrides="and">
+            <if test="map.id != null and map.id !=''">
+                and id = #{map.id,jdbcType=INTEGER}
+            </if>
+            <if test="map.url != null and map.url !=''">
+                and url = #{map.url,jdbcType=VARCHAR}
+            </if>
+            <if test="map.keyword != null and map.keyword !=''">
+                and keyword like #{map.keyword,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        <if test="map.sort != null and map.sort !='' and map.order != null and map.order != ''">
+            order by ${map.sort} ${map.order}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.example.common.entity.SearchKeyword">
+        insert into litemall_keyword
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="keyword != null">
+                keyword,
+            </if>
+            <if test="url != null">
+                url,
+            </if>
+            <if test="isHot != null">
+                is_hot,
+            </if>
+            <if test="isDefault != null">
+                is_default,
+            </if>
+            <if test="sortOrder != null">
+                sort_order,
+            </if>
+            <if test="addTime != null">
+                add_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="keyword != null">
+                #{keyword,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="isHot != null">
+                #{isHot,jdbcType=BIT},
+            </if>
+            <if test="isDefault != null">
+                #{isDefault,jdbcType=BIT},
+            </if>
+            <if test="sortOrder != null">
+                #{sortOrder,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null">
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.common.entity.SearchKeyword">
+        update litemall_keyword
+        <set>
+            <if test="keyword != null">
+                keyword = #{keyword,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="isHot != null">
+                is_hot = #{isHot,jdbcType=BIT},
+            </if>
+            <if test="isDefault != null">
+                is_default = #{isDefault,jdbcType=BIT},
+            </if>
+            <if test="sortOrder != null">
+                sort_order = #{sortOrder,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null">
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="deleteById" parameterType="java.lang.Integer">
+        update litemall_keyword set deleted = 1
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

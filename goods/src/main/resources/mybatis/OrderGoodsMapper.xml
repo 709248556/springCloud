@@ -25,16 +25,16 @@
         <include refid="Base_Column_List"/>
         FROM litemall_order_goods
         <trim prefix="where" prefixOverrides="and">
-            <if test="map.goodsId != null">
+            <if test="map.goodsId != null and map.goodsId  !=''">
                 and goods_id = #{map.goodsId,jdbcType=INTEGER}
             </if>
-            <if test="map.orderId != null">
+            <if test="map.orderId != null and map.orderId !=''">
                 and order_id = #{map.orderId,jdbcType=INTEGER}
             </if>
-            <if test="map.grouponDeleted != null">
+            <if test="map.grouponDeleted != null and map.grouponDeleted !=''">
                 and `deleted` = #{map.grouponDeleted}
             </if>
-            <if test="map.orderGoodsDeleted != null">
+            <if test="map.orderGoodsDeleted != null and map.orderGoodsDeleted !=''">
                 and `deleted` = #{map.orderGoodsDeleted}
             </if>
         </trim>
@@ -52,34 +52,34 @@
             <if test="goodsId != null">
                 goods_id,
             </if>
-            <if test="goodsName != null">
+            <if test="goodsName != null and goodsName !=''">
                 goods_name,
             </if>
-            <if test="goodsSn != null">
+            <if test="goodsSn != null and goodsSn !=''">
                 goods_sn,
             </if>
             <if test="productId != null">
                 product_id,
             </if>
-            <if test="number != null">
+            <if test="number != null and  !=''">
                 `number`,
             </if>
-            <if test="price != null">
+            <if test="price != null and  !=''">
                 price,
             </if>
-            <if test="specifications != null">
+            <if test="specifications != null and specifications !=''">
                 specifications,
             </if>
-            <if test="picUrl != null">
+            <if test="picUrl != null and picUrl !=''">
                 pic_url,
             </if>
-            <if test="comment != null">
+            <if test="comment != null and comment !=''">
                 `comment`,
             </if>
-            <if test="addTime != null">
+            <if test="addTime != null and addTime !=''">
                 add_time,
             </if>
-            <if test="updateTime != null">
+            <if test="updateTime != null and updateTime !=''">
                 update_time,
             </if>
             <if test="deleted != null">
@@ -87,7 +87,7 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="orderId != null">
+            <if test="orderId != null and  !=''">
                 #{orderId,jdbcType=INTEGER},
             </if>
             <if test="goodsId != null">
@@ -96,7 +96,7 @@
             <if test="goodsName != null">
                 #{goodsName,jdbcType=VARCHAR},
             </if>
-            <if test="goodsSn != null">
+            <if test="goodsSn != null and goodsSn !=''">
                 #{goodsSn,jdbcType=VARCHAR},
             </if>
             <if test="productId != null">
@@ -108,19 +108,19 @@
             <if test="price != null">
                 #{price,jdbcType=DECIMAL},
             </if>
-            <if test="specifications != null">
+            <if test="specifications != null and specifications !=''">
                 #{specifications,jdbcType=VARCHAR,typeHandler=com.example.common.mybatis.JsonStringArrayTypeHandler},
             </if>
-            <if test="picUrl != null">
+            <if test="picUrl != null and picUrl !=''">
                 #{picUrl,jdbcType=VARCHAR},
             </if>
-            <if test="comment != null">
+            <if test="comment != null and comment !=''">
                 #{comment,jdbcType=INTEGER},
             </if>
-            <if test="addTime != null">
+            <if test="addTime != null and addTime !=''">
                 #{addTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="updateTime != null">
+            <if test="updateTime != null and updateTime !=''">
                 #{updateTime,jdbcType=TIMESTAMP},
             </if>
             <if test="deleted != null">

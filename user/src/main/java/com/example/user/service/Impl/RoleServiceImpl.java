@@ -31,9 +31,9 @@ public class RoleServiceImpl implements RoleService {
         JsonData jsonData = new JsonData();
         jsonData.put("enabled", 1);
         jsonData.put("deleted", 0);
-        for (int id : roleIds) {
-            jsonData.put("id", id);
-            Role role = roleDao.selective(jsonData).get(0);
+        jsonData.put("roleIds",roleIds);
+        List<Role> roleList = roleDao.selective(jsonData);
+        for (Role role : roleList) {
             roles.add(role.getName());
         }
 

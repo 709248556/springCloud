@@ -2,7 +2,6 @@ package com.example.user.shiro;
 
 
 import com.example.common.entity.Admin;
-import com.example.common.feign.UserClient;
 import com.example.common.util.JsonData;
 import com.example.common.util.bcrypt.BCryptPasswordEncoder;
 import com.example.user.service.AdminService;

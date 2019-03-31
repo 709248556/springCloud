@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface CouponMapper {
     List<Coupon> selective(JsonData jsonData);
+    int insert(Coupon coupon);
+    int updateById(Coupon coupon);
+    int deleteById(int id);
 }

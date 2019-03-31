@@ -24,4 +24,27 @@ public class GoodsProductServiceImpl implements GoodsProductService {
     public int reduceStock(int productId, int number) {
         return goodsProductMapper.reduceStock(productId, number);
     }
+
+    @Override
+    public int addStock(int productId, int number) {
+        return goodsProductMapper.addStock(productId, number);
+    }
+
+    @Override
+    public int deleteByGid(int id) {
+        return goodsProductMapper.deleteByGid(id);
+    }
+
+    @Override
+    public int insert(GoodsProduct goodsProduct) {
+        return goodsProductMapper.insert(goodsProduct);
+    }
+
+    @Override
+    public List<GoodsProduct> queryByGid(int id) {
+        JsonData jsonData = new JsonData();
+        jsonData.put("goodsId",id);
+        jsonData.put("delete",0);
+        return goodsProductMapper.selective(jsonData);
+    }
 }

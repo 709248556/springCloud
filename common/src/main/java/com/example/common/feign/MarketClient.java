@@ -49,4 +49,6 @@ public interface MarketClient {
     @GetMapping("/clearGoods")
     RestResponse<Integer> clearGoods(@RequestParam("userId") int userId,@RequestParam("checked") int checked);
 
+    @GetMapping("getCategoryById")
+    RestResponse<Category> getCategoryById(@RequestParam("categoryId") int categoryId);
 }

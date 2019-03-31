@@ -8,4 +8,7 @@ import java.util.List;
 public interface IssueService {
     List<Issue> selective(JsonData jsonData);
     List<Issue> selectAll();
+    int insert(Issue issue);
+    int updateById(Issue issue);
+    int deleteById(int id);
 }

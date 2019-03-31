@@ -7,5 +7,11 @@ import java.util.List;
 
 public interface GoodsAttributeService {
 
-    public List<GoodsAttribute> selective(JsonData jsonData);
+    List<GoodsAttribute> selective(JsonData jsonData);
+
+    int deleteByGid(int id);
+
+    int insert(GoodsAttribute goodsAttribute);
+
+    List<GoodsAttribute> queryByGid(int id);
 }

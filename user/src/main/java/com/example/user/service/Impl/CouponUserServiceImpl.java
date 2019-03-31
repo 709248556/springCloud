@@ -21,6 +21,9 @@ public class CouponUserServiceImpl implements CouponUserService {
         if(jsonData.containsKey("page")&&jsonData.containsKey("size")){
             PageHelper.startPage(Integer.valueOf(jsonData.get("page").toString()), Integer.valueOf(jsonData.get("size").toString()));
         }
+        if(jsonData.containsKey("page")&&jsonData.containsKey("limit")){
+            PageHelper.startPage(Integer.valueOf(jsonData.get("page").toString()), Integer.valueOf(jsonData.get("limit").toString()));
+        }
         return couponUserMapper.selective(jsonData);
     }
 

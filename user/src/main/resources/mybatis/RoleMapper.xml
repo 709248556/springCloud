@@ -27,6 +27,12 @@
             <if test="map.enabled != null">
                 and enabled = #{map.enabled,jdbcType=VARCHAR}
             </if>
+            <if test="map.roleIds!=null">
+                and id in
+                <foreach collection="map.roleIds" item="roleId" index="index" open="(" close=")" separator=",">
+                    '${roleId}'
+                </foreach>
+            </if>
         </trim>
     </select>
 

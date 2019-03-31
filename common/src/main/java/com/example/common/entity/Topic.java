@@ -26,6 +26,16 @@ public class Topic {
 
     private Boolean deleted;
 
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public Integer getId() {
         return id;
     }

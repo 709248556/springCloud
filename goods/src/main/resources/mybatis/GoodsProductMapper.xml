@@ -20,10 +20,10 @@
         <include refid="Base_Column_List"/>
         FROM litemall_goods_product
         <trim prefix="where" prefixOverrides="and">
-            <if test="map.goodsId != null">
+            <if test="map.goodsId != null and map.goodsId  != ''">
                 and goods_id = #{map.goodsId,jdbcType=INTEGER}
             </if>
-            <if test="map.productId != null">
+            <if test="map.productId != null and map.productId != ''">
                 and id = #{map.productId,jdbcType=INTEGER}
             </if>
         </trim>
@@ -35,4 +35,70 @@
         where id = #{id,jdbcType=INTEGER} and number >= #{num,jdbcType=INTEGER}
     </update>
 
+    <update id="addStock" parameterType="map">
+        update litemall_goods_product
+        set number = number + #{num,jdbcType=INTEGER}, update_time = now()
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="deleteByGid" parameterType="integer">
+        update litemall_goods_product set deleted = 1
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insert" parameterType="com.example.common.entity.GoodsProduct">
+        insert into litemall_goods_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="specifications != null">
+                specifications,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="number != null">
+                `number`,
+            </if>
+            <if test="url != null">
+                url,
+            </if>
+            <if test="addTime != null">
+                add_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=INTEGER},
+            </if>
+            <if test="specifications != null">
+                #{specifications,jdbcType=VARCHAR,typeHandler=com.example.common.mybatis.JsonStringArrayTypeHandler},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="number != null">
+                #{number,jdbcType=INTEGER},
+            </if>
+            <if test="url != null">
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="addTime != null">
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
 </mapper>

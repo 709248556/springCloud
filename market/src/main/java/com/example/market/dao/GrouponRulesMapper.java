@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface GrouponRulesMapper {
     List<GrouponRules> selective(JsonData jsonData);
+    int updateById(GrouponRules grouponRules);
+    int insert(GrouponRules grouponRules);
+    int deleteById(int id);
 }

@@ -8,4 +8,7 @@ import java.util.List;
 public interface IssueMapper {
     List<Issue> selectAll();
     List<Issue> selective(JsonData jsonData);
+    int insert(Issue issue);
+    int updateById(Issue issue);
+    int deleteById(int id);
 }

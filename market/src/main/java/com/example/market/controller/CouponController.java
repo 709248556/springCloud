@@ -18,9 +18,11 @@ import com.example.market.service.Impl.CouponVerifyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -313,5 +315,70 @@ public class CouponController {
     @GetMapping("/getCouponVerify")
     public RestResponse getCouponVerify(Integer userId, Integer couponId, BigDecimal checkedGoodsPrice){
         return new RestResponse(couponVerifyService.checkCoupon(userId, couponId, checkedGoodsPrice));
+    }
+
+
+    @GetMapping("coupon/list")
+    public Object list(JsonData jsonData) {
+        jsonData.put("deleted",0);
+        jsonData.put("couponStatus",jsonData.get("status"));
+        jsonData.put("couponType",jsonData.get("type"));
+        List<Coupon> couponList = couponService.selective(jsonData);
+        long total = PageInfo.of(couponList).getTotal();
+        Map<String, Object> data = new HashMap<>();
+        data.put("total", total);
+        data.put("items", couponList);
+        return new RestResponse<>(data);
+    }
+
+    @PostMapping("coupon/create")
+    public RestResponse create(@RequestBody Coupon coupon) {
+        RestResponse restResponse = validate(coupon);
+        if (restResponse != null) {
+            return restResponse;
+        }
+
+        // 如果是兑换码类型，则这里需要生存一个兑换码
+        if (coupon.getType().equals(CouponConstant.TYPE_CODE)){
+            String code = couponService.generateCode();
+            coupon.setCode(code);
+        }
+
+        couponService.insert(coupon);
+        return new RestResponse(coupon);
+    }
+
+    @GetMapping("coupon/read")
+    public RestResponse read(@NotNull Integer id) {
+        JsonData jsonData = new JsonData();
+        jsonData.put("couponId",id);
+        Coupon coupon = couponService.selective(jsonData).get(0);
+        return new RestResponse(coupon);
+    }
+
+    @PostMapping("coupon/update")
+    public Object update(@RequestBody Coupon coupon) {
+        Object error = validate(coupon);
+        if (error != null) {
+            return error;
+        }
+        if (couponService.updateById(coupon) == 0) {
+            return new RestResponse<>(RestEnum.UPDATEDDATAFAILED);
+        }
+        return new RestResponse<>(coupon);
+    }
+
+    @PostMapping("coupon/delete")
+    public Object delete(@RequestBody Coupon coupon) {
+        if(couponService.deleteById(coupon.getId()) == 0) return new RestResponse<>(RestEnum.SERIOUS);
+        return new RestResponse<>();
+    }
+
+    private RestResponse validate(Coupon coupon) {
+        String name = coupon.getName();
+        if(StringUtils.isEmpty(name)){
+            return new RestResponse(RestEnum.BADARGUMENT);
+        }
+        return null;
     }
 }

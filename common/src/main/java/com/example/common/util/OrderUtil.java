@@ -23,9 +23,15 @@ import java.util.Random;
  * 当402系统自动确认收货以后，此时用户可以删除、去评价、或者再次购买
  */
 public class OrderUtil {
-
-
-
+    public static final Short STATUS_CREATE = 101;
+    public static final Short STATUS_PAY = 201;
+    public static final Short STATUS_SHIP = 301;
+    public static final Short STATUS_CONFIRM = 401;
+    public static final Short STATUS_CANCEL = 102;
+    public static final Short STATUS_AUTO_CANCEL = 103;
+    public static final Short STATUS_REFUND = 202;
+    public static final Short STATUS_REFUND_CONFIRM = 203;
+    public static final Short STATUS_AUTO_CONFIRM = 402;
 
     public static OrderHandleOption build(Order order) {
         int status = order.getOrderStatus().intValue();

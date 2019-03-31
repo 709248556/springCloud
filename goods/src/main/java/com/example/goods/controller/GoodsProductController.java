@@ -35,4 +35,9 @@ public class GoodsProductController {
     public RestResponse<List<GoodsProduct>> getGoodsProductAll(JsonData jsonData){
         return new RestResponse<>(goodsProductService.selective(jsonData));
     }
+
+    @GetMapping("/addStock")
+    public RestResponse addStock(int productId,int number){
+        return new RestResponse(goodsProductService.addStock(productId,number));
+    }
 }

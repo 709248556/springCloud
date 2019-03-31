@@ -26,9 +26,9 @@ public class PermissionServiceImpl implements PermissionService {
         }
         JsonData jsonData = new JsonData();
         jsonData.put("deleted", 0);
-        for (Integer roleId : roleIds) {
-            jsonData.put("roleId", roleId);
-            Permission permission = permissionDao.selective(jsonData).get(0);
+        jsonData.put("roleIds", roleIds);
+        List<Permission> permissionList = permissionDao.selective(jsonData);
+        for (Permission permission : permissionList) {
             permissions.add(permission.getPermission());
         }
         return permissions;

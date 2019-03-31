@@ -1,5 +1,6 @@
 package com.example.goods.service;
 
+import com.example.common.entity.GoodsSpecification;
 import com.example.common.entity.GoodsSpecificationVo;
 import com.example.common.util.JsonData;
 
@@ -20,5 +21,13 @@ public interface GoodsSpecificationService {
      * ]
      *
      */
-    public List<GoodsSpecificationVo> getGoodsSpecificationVoList(JsonData jsonData);
+    List<GoodsSpecificationVo> getGoodsSpecificationVoList(JsonData jsonData);
+
+    int deleteByGid(int id);
+
+    int insert(GoodsSpecification goodsSpecification);
+
+
+    List<GoodsSpecification> queryByGid(int id);
+
 }

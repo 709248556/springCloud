@@ -26,22 +26,22 @@
         <include refid="Base_Column_List"/>
         FROM litemall_cart
         <trim prefix="where" prefixOverrides="and">
-            <if test="map.cartId != null">
+            <if test="map.cartId != null and map.cartId != ''">
                 and id = #{map.cartId,jdbcType=INTEGER}
             </if>
-            <if test="map.userId != null">
+            <if test="map.userId != null and map.userId != ''">
                 and user_id = #{map.userId,jdbcType=INTEGER}
             </if>
-            <if test="map.goodsId != null">
+            <if test="map.goodsId != null and map.goodsId != ''">
                 and goods_id = #{map.goodsId,jdbcType=INTEGER}
             </if>
-            <if test="map.productId != null">
+            <if test="map.productId != null and map.productId != ''">
                 and product_id = #{map.productId,jdbcType=INTEGER}
             </if>
-            <if test="map.deleted != null">
+            <if test="map.deleted != null and map.deleted != ''">
                 and `deleted` = #{map.deleted,jdbcType=INTEGER}
             </if>
-            <if test="map.checked != null">
+            <if test="map.checked != null and map.checked != ''">
                 and `checked` = #{map.checked,jdbcType=INTEGER}
             </if>
         </trim>
@@ -50,13 +50,13 @@
     <insert id="insertive" parameterType="JsonData">
         INSERT INTO litemall_cart
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="map.Id != null">
+            <if test="map.Id != null and map.Id != ''">
                 id,
             </if>
-            <if test="map.userId != null">
+            <if test="map.userId != null and map.userId != ''">
                 `user_id`,
             </if>
-            <if test="map.goodsId != null">
+            <if test="map.goodsId != null and map.goodsId != ''">
                 goods_id,
             </if>
             <if test="map.goodsSn != null and map.goodsSn != ''">
@@ -65,45 +65,45 @@
             <if test="map.goodsName != null and map.goodsName != ''">
                 goods_name,
             </if>
-            <if test="map.productId != null">
+            <if test="map.productId != null and map.productId != ''">
                 product_id,
             </if>
-            <if test="map.price != null">
+            <if test="map.price != null and map.price != ''">
                 price,
             </if>
-            <if test="map.number != null">
+            <if test="map.number != null  and map.number != ''">
                 `number`,
             </if>
             <if test="map.specifications != null and map.specifications != ''">
                 specifications,
             </if>
-            <if test="map.checked != null">
+            <if test="map.checked != null and map.checked != ''">
                 checked,
             </if>
             <if test="map.picUrl != null and map.picUrl != ''">
                 pic_url,
             </if>
-            <if test="map.status != null">
+            <if test="map.status != null and map.status != ''">
                 `status`,
             </if>
-            <if test="map.addTime != null">
+            <if test="map.addTime != null and map.addTime != ''">
                 add_time,
             </if>
-            <if test="map.updateTime != null">
+            <if test="map.updateTime != null and map.updateTime != ''">
                 update_time,
             </if>
-            <if test="map.deleted != null">
+            <if test="map.deleted != null and map.deleted != ''">
                 deleted,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="map.Id != null">
+            <if test="map.Id != null and map.Id != ''">
                 #{map.Id,jdbcType=INTEGER},
             </if>
-            <if test="map.userId != null">
+            <if test="map.userId != null and map.userId != ''">
                 #{map.userId,jdbcType=INTEGER},
             </if>
-            <if test="map.goodsId != null">
+            <if test="map.goodsId != null and map.goodsId != ''">
                 #{map.goodsId,jdbcType=INTEGER},
             </if>
             <if test="map.goodsSn != null and map.goodsSn != ''">
@@ -112,31 +112,31 @@
             <if test="map.goodsName != null and map.goodsName != ''">
                 #{map.goodsName,jdbcType=VARCHAR},
             </if>
-            <if test="map.productId != null">
+            <if test="map.productId != null and map.productId != ''">
                 #{map.productId,jdbcType=INTEGER},
             </if>
-            <if test="map.price != null">
+            <if test="map.price != null and map.price != ''">
                 #{map.price,jdbcType=DECIMAL},
             </if>
-            <if test="map.number != null">
+            <if test="map.number != null and map.number != ''">
                 #{map.number,jdbcType=SMALLINT},
             </if>
-            <if test="map.specifications != null">
+            <if test="map.specifications != null and map.specifications != ''">
                 #{map.specifications,jdbcType=VARCHAR,typeHandler=com.example.common.mybatis.JsonStringArrayTypeHandler},
             </if>
-            <if test="map.checked != null">
+            <if test="map.checked != null and map.checked != ''">
                 #{map.checked,jdbcType=BIT},
             </if>
-            <if test="map.picUrl != null">
+            <if test="map.picUrl != null and map.picUrl != ''">
                 #{map.picUrl,jdbcType=VARCHAR},
             </if>
-            <if test="map.addTime != null">
+            <if test="map.addTime != null and map.addTime != ''">
                 #{map.addTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="map.updateTime != null">
+            <if test="map.updateTime != null and map.updateTime != ''">
                 #{map.updateTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="map.deleted != null">
+            <if test="map.deleted != null and map.deleted != ''">
                 #{map.deleted,jdbcType=BIT},
             </if>
         </trim>

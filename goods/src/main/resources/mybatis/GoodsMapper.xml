@@ -38,34 +38,113 @@
         <include refid="Base_Column_List"/>
         FROM litemall_goods
         <trim prefix="where" prefixOverrides="and">
-            <if test="map.goodsId != null">
+            <if test="map.goodsId != null and map.goodsId != ''">
                 and id = #{map.goodsId,jdbcType=INTEGER}
             </if>
-            <if test="map.categoryId != null">
+            <if test="map.categoryId != null and map.categoryId != ''">
                 and category_id = #{map.categoryId,jdbcType=INTEGER}
             </if>
-            <if test="map.brandId != null">
+            <if test="map.brandId != null and map.brandId != ''">
                 and brand_id = #{map.brandId,jdbcType=INTEGER}
             </if>
-            <if test="map.isHot != null">
+            <if test="map.isHot != null and map.isHot != ''">
                 and is_hot = #{map.isHot,jdbcType=INTEGER}
             </if>
-            <if test="map.isNew != null">
+            <if test="map.isNew != null and map.isNew != ''">
                 and is_new = #{map.isNew,jdbcType=INTEGER}
             </if>
-            <if test="map.isOnSale != null">
+            <if test="map.isOnSale != null and map.isOnSale != ''">
                 and is_on_sale = #{map.isOnSale,jdbcType=INTEGER}
             </if>
-            <if test="map.deleted != null">
+            <if test="map.deleted != null and map.deleted != ''">
                 and deleted = #{map.deleted,jdbcType=INTEGER}
             </if>
             <if test="map.keyword != null and map.keyword != ''">
                 AND `name` like CONCAT('%', #{map.keyword},'%')
+            </if>
+            <if test="map.name != null and map.name != ''">
+                and `name` like #{map.name,jdbcType=VARCHAR}
+            </if>
+            <if test="map.realName != null and map.realName != ''">
+                and `name` = #{map.realName,jdbcType=VARCHAR}
+            </if>
+            <if test="map.goodsSn != null and map.goodsSn != ''">
+                and `goods_sn` like #{map.goodsSn,jdbcType=VARCHAR}
             </if>
         </trim>
         <if test="map.sort != null and map.sort !='' and map.order != null and map.order != ''">
             order by ${map.sort} ${map.order}
         </if>
     </select>
+    <update id="updateById" parameterType="com.example.common.entity.Goods">
+        update litemall_goods
+        <set>
+            <if test="goodsSn != null">
+                goods_sn = #{goodsSn,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId,jdbcType=INTEGER},
+            </if>
+            <if test="brandId != null">
+                brand_id = #{brandId,jdbcType=INTEGER},
+            </if>
+            <if test="gallery != null">
+                gallery = #{gallery,jdbcType=VARCHAR,typeHandler=com.example.common.mybatis.JsonStringArrayTypeHandler},
+            </if>
+            <if test="keywords != null">
+                keywords = #{keywords,jdbcType=VARCHAR},
+            </if>
+            <if test="brief != null">
+                brief = #{brief,jdbcType=VARCHAR},
+            </if>
+            <if test="isOnSale != null">
+                is_on_sale = #{isOnSale,jdbcType=BIT},
+            </if>
+            <if test="sortOrder != null">
+                sort_order = #{sortOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="picUrl != null">
+                pic_url = #{picUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="shareUrl != null">
+                share_url = #{shareUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="isNew != null">
+                is_new = #{isNew,jdbcType=BIT},
+            </if>
+            <if test="isHot != null">
+                is_hot = #{isHot,jdbcType=BIT},
+            </if>
+            <if test="unit != null">
+                unit = #{unit,jdbcType=VARCHAR},
+            </if>
+            <if test="counterPrice != null">
+                counter_price = #{counterPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="retailPrice != null">
+                retail_price = #{retailPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="addTime != null">
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=BIT},
+            </if>
+            <if test="detail != null">
+                detail = #{detail,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 
+    <update id="deleteById" parameterType="java.lang.Integer">
+        update litemall_goods set deleted = 1
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 </mapper>

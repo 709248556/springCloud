@@ -8,6 +8,7 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service("categoryService")
@@ -26,5 +27,23 @@ public class CategoryServiceImpl implements CategoryService {
             jsonData.put("name","%"+jsonData.get("name")+"%");
         }
         return categoryMapper.selective(jsonData);
+    }
+
+    @Override
+    public int insert(Category category) {
+        category.setAddTime(LocalDateTime.now());
+        category.setUpdateTime(LocalDateTime.now());
+        return categoryMapper.insert(category);
+    }
+
+    @Override
+    public int updateById(Category category) {
+        category.setUpdateTime(LocalDateTime.now());
+        return categoryMapper.updateById(category);
+    }
+
+    @Override
+    public int deleteById(int id) {
+        return categoryMapper.deleteById(id);
     }
 }

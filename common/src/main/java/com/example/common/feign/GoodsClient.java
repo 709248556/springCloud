@@ -62,4 +62,10 @@ public interface GoodsClient {
 
     @GetMapping("/getGoodsProductAll")
     RestResponse<List<GoodsProduct>> getGoodsProductAll(@RequestParam("deleted") int deleted);
+
+    @GetMapping("/getBrandAll")
+    RestResponse<List<Brand>> getBrandAll(@RequestParam("deleted") int deleted);
+
+    @GetMapping("/addStock")
+    public RestResponse<Integer> addStock(@RequestParam("productId") int productId,@RequestParam("number") int number);
 }

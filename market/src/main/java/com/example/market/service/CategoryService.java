@@ -7,4 +7,10 @@ import java.util.List;
 
 public interface CategoryService {
     List<Category> selective(JsonData jsonData);
+
+    int insert(Category category);
+
+    int updateById(Category category);
+
+    int deleteById(int id);
 }

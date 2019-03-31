@@ -8,6 +8,7 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service("brandService")
@@ -24,5 +25,23 @@ public class brandServiceImpl implements BrandService {
             jsonData.put("name","%"+jsonData.get("name")+"%");
         }
         return brandMapper.selective(jsonData);
+    }
+
+    @Override
+    public int insert(Brand brand) {
+        brand.setAddTime(LocalDateTime.now());
+        brand.setUpdateTime(LocalDateTime.now());
+        return brandMapper.insert(brand);
+    }
+
+    @Override
+    public int updateById(Brand brand) {
+        brand.setUpdateTime(LocalDateTime.now());
+        return brandMapper.updateById(brand);
+    }
+
+    @Override
+    public int deleteById(int id) {
+        return brandMapper.deleteById(id);
     }
 }

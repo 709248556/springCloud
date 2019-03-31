@@ -19,7 +19,22 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> selective(JsonData jsonData) {
-        PageHelper.startPage(PageContstant.COMMENT_OFFSET,PageContstant.COMENT_LIMIT);
+//        PageHelper.startPage(PageContstant.COMMENT_OFFSET,PageContstant.COMENT_LIMIT);
+        if (jsonData.containsKey("page") && jsonData.containsKey("limit"))
+            PageHelper.startPage(Integer.valueOf(jsonData.get("page").toString()), Integer.valueOf(jsonData.get("limit").toString()));
+        if (jsonData.containsKey("name")) {
+            jsonData.put("name", "%" + jsonData.get("name") + "%");
+        }
         return commentMapper.selective(jsonData);
+    }
+
+    @Override
+    public int insert(Comment comment) {
+        return commentMapper.insert(comment);
+    }
+
+    @Override
+    public int deleteById(int id) {
+        return commentMapper.deleteById(id);
     }
 }

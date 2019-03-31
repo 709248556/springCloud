@@ -23,6 +23,12 @@
             <if test="map.deleted != null">
                 and deleted = #{map.deleted,jdbcType=VARCHAR}
             </if>
+            <if test="map.roleIds!=null">
+                and role_id in
+                <foreach collection="map.roleIds" item="roleId" index="index" open="(" close=")" separator=",">
+                    '${roleId}'
+                </foreach>
+            </if>
         </trim>
     </select>
 

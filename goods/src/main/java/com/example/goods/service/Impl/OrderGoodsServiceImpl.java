@@ -24,4 +24,5 @@ public class OrderGoodsServiceImpl implements OrderGoodsService {
     public int insert(OrderGoods orderGoods) {
         return orderGoodsMapper.insert(orderGoods);
     }
+
 }

@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface AdvertisementMapper {
     List<Advertisement> selective(JsonData jsonData);
+    int updateById(Advertisement advertisement);
+    int deleteById(int id);
+    int insert(Advertisement advertisement);
 }

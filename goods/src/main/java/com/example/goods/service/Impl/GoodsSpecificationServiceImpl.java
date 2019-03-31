@@ -40,4 +40,23 @@ public class GoodsSpecificationServiceImpl implements GoodsSpecificationService{
         }
         return specificationVoList;
     }
+
+    @Override
+    public int deleteByGid(int id) {
+        return goodsSpecificationMapper.deleteByGid(id);
+    }
+
+    @Override
+    public int insert(GoodsSpecification goodsSpecification) {
+        return goodsSpecificationMapper.insert(goodsSpecification);
+    }
+
+    @Override
+    public List<GoodsSpecification> queryByGid(int id) {
+        JsonData jsonData = new JsonData();
+        jsonData.put("goodsId",id);
+        jsonData.put("deleted",0);
+        return goodsSpecificationMapper.selective(jsonData);
+    }
+
 }
